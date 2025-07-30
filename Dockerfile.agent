@@ -1,0 +1,61 @@
+# Agent Dockerfile
+FROM golang:1.21-alpine AS builder
+
+# 安装必要的包
+RUN apk add --no-cache git ca-certificates tzdata
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制go mod文件
+COPY go.mod go.sum ./
+
+# 下载依赖
+RUN go mod download
+
+# 复制源码
+COPY . .
+
+# 构建应用
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o agent ./cmd/agent
+
+# 生成最终镜像
+FROM alpine:latest
+
+# 安装必要的包
+RUN apk --no-cache add ca-certificates tzdata wget curl
+
+# 创建非root用户
+RUN addgroup -g 1001 xbox && \
+    adduser -D -s /bin/sh -u 1001 -G xbox xbox
+
+# 设置工作目录
+WORKDIR /app
+
+# 从builder阶段复制二进制文件
+COPY --from=builder /app/agent .
+COPY --from=builder /app/configs ./configs
+
+# 创建必要的目录
+RUN mkdir -p logs data && \
+    chown -R xbox:xbox /app
+
+# 安装sing-box (可选，也可以通过挂载外部二进制)
+RUN wget -O /tmp/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v1.8.0/sing-box-1.8.0-linux-amd64.tar.gz && \
+    tar -xzf /tmp/sing-box.tar.gz -C /tmp && \
+    mv /tmp/sing-box-*/sing-box /usr/local/bin/ && \
+    chmod +x /usr/local/bin/sing-box && \
+    rm -rf /tmp/sing-box*
+
+# 切换到非root用户
+USER xbox
+
+# 暴露端口
+EXPOSE 8081 9091
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8081/health || exit 1
+
+# 启动命令
+CMD ["./agent", "-config", "./configs/agent.yaml"]

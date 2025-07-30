@@ -1,0 +1,37 @@
+# Xbox Agent 配置文件
+server:
+  host: "0.0.0.0"
+  port: 8081
+  mode: "release"
+
+database:
+  driver: "mysql"
+  host: "localhost"
+  port: 3306
+  username: "root"
+  password: "password"
+  database: "xbox_manager"
+  charset: "utf8mb4"
+  options: "parseTime=True&loc=Local"
+
+grpc:
+  host: "0.0.0.0" 
+  port: 9091
+  tls:
+    enabled: false
+
+log:
+  level: "info"
+  format: "json"
+  output: "stdout"
+  file: "logs/agent.log"
+  max_size: 100
+  max_backups: 10
+  max_age: 30
+
+agent:
+  id: ""  # 空值将自动生成
+  controller_addr: "localhost:9090"
+  heartbeat_interval: 30
+  singbox_config: "./configs/sing-box.json"
+  singbox_binary: "sing-box"

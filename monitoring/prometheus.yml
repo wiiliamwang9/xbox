@@ -1,0 +1,46 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+scrape_configs:
+  # Controller metrics
+  - job_name: 'xbox-controller'
+    static_configs:
+      - targets: ['controller:2112']
+    metrics_path: /metrics
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    
+  # Agent metrics  
+  - job_name: 'xbox-agent'
+    static_configs:
+      - targets: ['agent:2113']
+    metrics_path: /metrics
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # MySQL metrics (需要mysql_exporter)
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+    scrape_interval: 30s
+
+  # Node metrics (需要node_exporter)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # Prometheus自监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093

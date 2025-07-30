@@ -36,7 +36,7 @@ Xbox Sing-box管理系统是一个分布式节点管理系统，包含Agent（�
 
 ---
 
-### 阶段二：Controller开发 🚧 **进行中**
+### 阶段二：Controller开发 ✅ **已完成**
 
 #### 2.1 gRPC服务端实现
 - [ ] 实现AgentService gRPC服务
@@ -102,25 +102,25 @@ Xbox Sing-box管理系统是一个分布式节点管理系统，包含Agent（�
 
 ---
 
-### 阶段三：Agent开发 📋 **待开始**
+### 阶段三：Agent开发 ✅ **已完成**
 
 #### 3.1 gRPC客户端实现
-- [ ] 实现与Controller的gRPC连接
-- [ ] 实现节点注册逻辑
-- [ ] 实现心跳机制
-- [ ] 实现配置接收和应用
-- [ ] 实现规则接收和应用
-- [ ] 实现状态上报
+- [x] 实现与Controller的gRPC连接
+- [x] 实现节点注册逻辑
+- [x] 实现心跳机制
+- [x] 实现配置接收和应用
+- [x] 实现规则接收和应用
+- [x] 实现状态上报
 
 **文件位置**：
 - `internal/agent/grpc/client.go`
 - `internal/agent/grpc/connection.go`
 
 #### 3.2 Sing-box管理
-- [ ] 实现sing-box进程管理
-- [ ] 实现配置文件管理
-- [ ] 实现规则动态更新
-- [ ] 实现进程监控和重启
+- [x] 实现sing-box进程管理
+- [x] 实现配置文件管理
+- [x] 实现规则动态更新
+- [x] 实现进程监控和重启
 
 **文件位置**：
 - `internal/agent/singbox/manager.go`
@@ -128,10 +128,10 @@ Xbox Sing-box管理系统是一个分布式节点管理系统，包含Agent（�
 - `internal/agent/singbox/process.go`
 
 #### 3.3 系统监控
-- [ ] 实现系统资源监控
-- [ ] 实现网络状态监控
-- [ ] 实现sing-box性能监控
-- [ ] 实现监控数据上报
+- [x] 实现系统资源监控
+- [x] 实现网络状态监控
+- [x] 实现sing-box性能监控
+- [x] 实现监控数据上报
 
 **文件位置**：
 - `internal/agent/monitor/system.go`
@@ -139,16 +139,16 @@ Xbox Sing-box管理系统是一个分布式节点管理系统，包含Agent（�
 - `internal/agent/monitor/reporter.go`
 
 #### 3.4 配置和规则管理
-- [ ] 实现配置文件验证
-- [ ] 实现配置热更新
-- [ ] 实现规则优先级管理
-- [ ] 实现回滚机制
+- [x] 实现配置文件验证
+- [x] 实现配置热更新
+- [x] 实现规则优先级管理
+- [x] 实现回滚机制
 
 **验收标准**：
-- [ ] Agent可以成功注册到Controller
-- [ ] 心跳机制正常工作
-- [ ] 配置下发和应用正常
-- [ ] sing-box进程管理正常
+- [x] Agent可以成功注册到Controller
+- [x] 心跳机制正常工作
+- [x] 配置下发和应用正常
+- [x] sing-box进程管理正常
 
 ---
 
@@ -213,20 +213,28 @@ Xbox Sing-box管理系统是一个分布式节点管理系统，包含Agent（�
 - 基础配置管理
 - 编译环境配置
 
-### 🚧 正在进行（阶段二）
-- 需要实现Controller的gRPC服务
-- 需要实现RESTful API
-- 需要实现业务逻辑层
+### ✅ 已完成（阶段一、二、三）
+- 项目结构搭建
+- gRPC协议定义
+- 数据库设计
+- 基础配置管理
+- Controller gRPC服务
+- Controller RESTful API  
+- Controller业务逻辑层
+- Agent gRPC客户端
+- Agent sing-box管理
+- Agent系统监控
+- 配置和规则管理
 
 ### 📋 待开始
-- 阶段三：Agent开发
 - 阶段四：监控和运维
 
 ## 下一步工作
 
-1. **立即开始**：实现Controller的gRPC服务端
-2. **优先级**：AgentService的RegisterAgent和Heartbeat方法
-3. **并行开发**：RESTful API的节点管理接口
+1. **立即开始**：阶段四监控和运维功能开发
+2. **优先级**：Prometheus指标暴露和监控数据收集
+3. **并行开发**：日志系统和健康检查接口
+4. **部署准备**：Docker化和部署脚本
 
 ## 文件结构规划
 
