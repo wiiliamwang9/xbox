@@ -225,3 +225,31 @@
 [GIN] 2025/07/30 - 08:10:20 | 200 |     114.402µs |   149.50.96.114 | GET      "/"
 2025/07/30 08:10:23 收到心跳: AgentID=debian-1753875293, Status=online
 [GIN] 2025/07/30 - 08:10:48 | 200 |      84.201µs |   149.50.96.114 | GET      "/"
+2025/07/30 08:10:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:11:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:11:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:12:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:12:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:13:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:13:53 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/07/30 - 08:14:02 | 200 |        46.5µs |  185.151.174.62 | GET      "/"
+2025/07/30 08:14:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:14:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:15:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:15:53 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/07/30 - 08:16:22 | 200 |        54.1µs |   149.50.96.114 | GET      "/"
+2025/07/30 08:16:23 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/07/30 - 08:16:38 | 200 |      41.801µs |  44.220.185.239 | GET      "/"
+2025/07/30 08:16:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:17:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:17:53 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/07/30 - 08:18:05 | 200 |      79.101µs |    170.39.218.2 | GET      "/"
+[GIN] 2025/07/30 - 08:18:05 | 200 |     122.901µs |    170.39.218.2 | GET      "/"
+[GIN] 2025/07/30 - 08:18:06 | 404 |         7.4µs |    170.39.218.2 | GET      "/.aws/credentials"
+2025/07/30 08:18:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:18:53 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/07/30 - 08:19:04 | 200 |     128.501µs |   149.50.96.114 | GET      "/"
+2025/07/30 08:19:23 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/07/30 - 08:19:25 | 200 |      88.301µs |   149.50.96.114 | GET      "/"
+2025/07/30 08:19:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/07/30 08:20:23 收到心跳: AgentID=debian-1753875293, Status=online
