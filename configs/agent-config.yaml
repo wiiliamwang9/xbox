@@ -1,0 +1,16 @@
+# Xbox Agent配置文件
+
+# 日志配置
+log:
+  level: "info"        # debug, info, warn, error
+  format: "json"       # json, text
+  output: "stdout"     # stdout, file
+  file: "logs/agent.log"
+
+# Agent配置
+agent:
+  id: ""                                    # Agent ID，留空自动生成（使用hostname-timestamp）
+  controller_addr: "165.254.16.246:9090"   # Controller gRPC地址（当前节点的内网IP）
+  heartbeat_interval: 30                    # 心跳间隔（秒）
+  singbox_config: "./sing-box.json"        # sing-box配置文件路径
+  singbox_binary: "sing-box"               # sing-box可执行文件路径

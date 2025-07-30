@@ -1,0 +1,102 @@
+syntax = "proto3";
+package agent;
+option go_package = "github.com/xbox/sing-box-manager/proto/agent";
+
+// Agent管理服务
+service AgentService {
+    // 节点注册
+    rpc RegisterAgent(RegisterRequest) returns (RegisterResponse);
+    // 心跳检测
+    rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+    // 配置下发
+    rpc UpdateConfig(ConfigRequest) returns (ConfigResponse);
+    // 规则管理
+    rpc UpdateRules(RulesRequest) returns (RulesResponse);
+    // 获取节点状态
+    rpc GetStatus(StatusRequest) returns (StatusResponse);
+}
+
+// 注册请求
+message RegisterRequest {
+    string agent_id = 1;
+    string hostname = 2;
+    string ip_address = 3;
+    string version = 4;
+    map<string, string> metadata = 5;
+}
+
+// 注册响应
+message RegisterResponse {
+    bool success = 1;
+    string message = 2;
+    string token = 3;
+}
+
+// 心跳请求
+message HeartbeatRequest {
+    string agent_id = 1;
+    string status = 2;
+    map<string, string> metrics = 3;
+}
+
+// 心跳响应
+message HeartbeatResponse {
+    bool success = 1;
+    string message = 2;
+    int64 next_heartbeat_interval = 3; // 秒
+}
+
+// 配置请求
+message ConfigRequest {
+    string agent_id = 1;
+    string config_content = 2;
+    string config_version = 3;
+    bool force_update = 4;
+}
+
+// 配置响应
+message ConfigResponse {
+    bool success = 1;
+    string message = 2;
+    string applied_version = 3;
+}
+
+// 规则请求
+message RulesRequest {
+    string agent_id = 1;
+    repeated Rule rules = 2;
+    string operation = 3; // add, delete, update, replace
+}
+
+// 规则响应
+message RulesResponse {
+    bool success = 1;
+    string message = 2;
+    repeated string failed_rules = 3;
+}
+
+// 状态请求
+message StatusRequest {
+    string agent_id = 1;
+}
+
+// 状态响应
+message StatusResponse {
+    bool success = 1;
+    string agent_id = 2;
+    string status = 3;
+    string config_version = 4;
+    int32 rules_count = 5;
+    map<string, string> system_info = 6;
+    repeated string active_connections = 7;
+}
+
+// 规则定义
+message Rule {
+    string id = 1;
+    string type = 2; // inbound, outbound, route, dns
+    string content = 3;
+    int32 priority = 4;
+    bool enabled = 5;
+    map<string, string> metadata = 6;
+}

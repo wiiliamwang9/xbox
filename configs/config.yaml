@@ -1,0 +1,45 @@
+# Xbox Sing-box管理系统配置文件
+
+# HTTP服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8080
+  mode: "release"  # debug, release, test
+
+# 数据库配置
+database:
+  driver: "mysql"
+  host: "localhost"
+  port: 3306
+  username: "root"
+  password: "xbox123456"
+  database: "xbox_manager"
+  charset: "utf8mb4"
+  options: "parseTime=True&loc=Local"
+
+# gRPC服务配置
+grpc:
+  host: "0.0.0.0"
+  port: 9090
+  tls:
+    enabled: false
+    cert_file: ""
+    key_file: ""
+
+# 日志配置
+log:
+  level: "info"        # debug, info, warn, error
+  format: "json"       # json, text
+  output: "stdout"     # stdout, file
+  file: "logs/app.log"
+  max_size: 100        # MB
+  max_backups: 10
+  max_age: 30          # days
+
+# Agent配置（用于Agent节点）
+agent:
+  id: ""                        # Agent ID，留空自动生成
+  controller_addr: "localhost:9090"
+  heartbeat_interval: 30        # 心跳间隔（秒）
+  singbox_config: "./sing-box.json"
+  singbox_binary: "sing-box"
