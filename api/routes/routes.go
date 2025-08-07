@@ -22,6 +22,7 @@ func SetupRoutes(r *gin.Engine, agentService service.AgentService) {
 			agents.GET("/:id", agentHandler.GetAgent)        // 获取单个Agent
 			agents.PUT("/:id", agentHandler.UpdateAgent)     // 更新Agent
 			agents.DELETE("/:id", agentHandler.DeleteAgent)  // 删除Agent
+			agents.POST("/deploy", agentHandler.DeployAgent) // 部署Agent
 		}
 		
 		// TODO: 配置管理路由

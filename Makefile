@@ -30,8 +30,8 @@ deps:
 
 # 初始化数据库
 init-db:
-	@echo "Initializing database..."
-	@mysql -u root -p < scripts/init.sql
+	@echo "Skipping database initialization (handled by application or Docker)"
+	@echo "Database will be initialized automatically on first controller startup"
 
 # 运行controller
 run-controller: build

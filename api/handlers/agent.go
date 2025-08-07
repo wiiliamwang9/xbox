@@ -3,6 +3,8 @@ package handlers
 import (
 	"net/http"
 	"strconv"
+	"os/exec"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xbox/sing-box-manager/internal/controller/service"
@@ -257,4 +259,53 @@ type AgentStatsResponse struct {
 	OfflineCount int `json:"offline_count"`
 	TotalCount   int `json:"total_count"`
 	ErrorCount   int `json:"error_count"`
+}
+
+// DeployAgentRequest 部署Agent请求
+type DeployAgentRequest struct {
+	NodeIp      string `json:"node_ip" binding:"required"`
+	SshPort     int    `json:"ssh_port" binding:"required"`
+	SshUser     string `json:"ssh_user" binding:"required"`
+	SshPassword string `json:"ssh_password" binding:"required"`
+}
+
+// DeployAgent 部署Agent到远程节点
+// @Summary 部署Agent
+// @Description 在指定的远程节点上部署Agent
+// @Tags agents
+// @Accept json
+// @Produce json
+// @Param request body DeployAgentRequest true "部署参数"
+// @Success 200 {object} Response{data=string}
+// @Router /api/v1/agents/deploy [post]
+func (h *AgentHandler) DeployAgent(c *gin.Context) {
+	var req DeployAgentRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, Response{
+			Code:    400,
+			Message: "参数无效",
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	// 调用部署脚本
+	scriptPath := "/root/wl/code/xbox/scripts/deploy_agent.sh"
+	cmd := exec.Command("bash", scriptPath, req.NodeIp, strconv.Itoa(req.SshPort), req.SshPassword)
+	
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Response{
+			Code:    500,
+			Message: "Agent部署失败",
+			Error:   fmt.Sprintf("执行部署脚本失败: %v, 输出: %s", err, output),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, Response{
+		Code:    200,
+		Message: "Agent部署成功",
+		Data:    string(output),
+	})
 }
