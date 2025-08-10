@@ -25,6 +25,9 @@ func SetupRoutes(r *gin.Engine, agentService service.AgentService) {
 			agents.POST("/deploy", agentHandler.DeployAgent) // 部署Agent
 		}
 		
+		// 过滤器管理路由（黑名单/白名单）
+		handlers.SetupFilterRoutes(v1)
+		
 		// TODO: 配置管理路由
 		// configs := v1.Group("/configs")
 		// {

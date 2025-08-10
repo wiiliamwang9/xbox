@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/xbox/sing-box-manager/internal/agent/filter"
 	"github.com/xbox/sing-box-manager/internal/agent/monitor"
 	"github.com/xbox/sing-box-manager/internal/agent/singbox"
 	"github.com/xbox/sing-box-manager/internal/config"
@@ -26,6 +27,7 @@ type Client struct {
 	registered   bool
 	monitor      *monitor.SystemMonitor
 	singboxMgr   *singbox.Manager
+	filterMgr    *filter.FilterManager
 }
 
 // NewClient 创建gRPC客户端实例
@@ -43,11 +45,15 @@ func NewClient(cfg *config.Config) *Client {
 		cfg.Agent.SingBoxConfig,
 	)
 	
+	// 创建过滤器管理器
+	filterMgr := filter.NewFilterManager("./configs/filter.json")
+	
 	return &Client{
 		config:     cfg,
 		agentID:    agentID,
 		monitor:    monitor.NewSystemMonitor(),
 		singboxMgr: singboxMgr,
+		filterMgr:  filterMgr,
 	}
 }
 
@@ -260,5 +266,163 @@ func (c *Client) StopSingbox() error {
 // RestartSingbox 重启sing-box服务
 func (c *Client) RestartSingbox() error {
 	return c.singboxMgr.Restart()
+}
+
+// UpdateBlacklist 更新黑名单
+func (c *Client) UpdateBlacklist(protocol string, domains, ips, ports []string, operation string) error {
+	if err := c.filterMgr.UpdateBlacklist(protocol, domains, ips, ports, operation); err != nil {
+		return fmt.Errorf("更新黑名单失败: %v", err)
+	}
+	
+	// 重新生成sing-box配置并重启
+	if err := c.regenerateSingboxConfig(); err != nil {
+		return fmt.Errorf("重新生成配置失败: %v", err)
+	}
+	
+	log.Printf("黑名单更新成功: protocol=%s, operation=%s", protocol, operation)
+	return nil
+}
+
+// UpdateWhitelist 更新白名单
+func (c *Client) UpdateWhitelist(protocol string, domains, ips, ports []string, operation string) error {
+	if err := c.filterMgr.UpdateWhitelist(protocol, domains, ips, ports, operation); err != nil {
+		return fmt.Errorf("更新白名单失败: %v", err)
+	}
+	
+	// 重新生成sing-box配置并重启
+	if err := c.regenerateSingboxConfig(); err != nil {
+		return fmt.Errorf("重新生成配置失败: %v", err)
+	}
+	
+	log.Printf("白名单更新成功: protocol=%s, operation=%s", protocol, operation)
+	return nil
+}
+
+// GetFilterConfig 获取过滤器配置
+func (c *Client) GetFilterConfig(protocol string) map[string]*filter.ProtocolFilter {
+	if protocol == "" {
+		return c.filterMgr.GetAllFilters()
+	}
+	
+	result := make(map[string]*filter.ProtocolFilter)
+	if filter, exists := c.filterMgr.GetFilter(protocol); exists {
+		result[protocol] = filter
+	}
+	
+	return result
+}
+
+// RollbackConfig 回滚配置
+func (c *Client) RollbackConfig(targetVersion, reason string) error {
+	log.Printf("开始配置回滚: target_version=%s, reason=%s", targetVersion, reason)
+	
+	if err := c.filterMgr.Rollback(targetVersion); err != nil {
+		return fmt.Errorf("回滚过滤器配置失败: %v", err)
+	}
+	
+	// 重新生成sing-box配置并重启
+	if err := c.regenerateSingboxConfig(); err != nil {
+		return fmt.Errorf("重新生成配置失败: %v", err)
+	}
+	
+	log.Printf("配置回滚成功: target_version=%s", targetVersion)
+	return nil
+}
+
+// regenerateSingboxConfig 重新生成sing-box配置
+func (c *Client) regenerateSingboxConfig() error {
+	// 获取过滤器规则
+	filterRules := c.filterMgr.GenerateRouteRules()
+	
+	// 读取基础配置模板
+	baseConfig, err := c.loadBaseSingboxConfig()
+	if err != nil {
+		return fmt.Errorf("加载基础配置失败: %v", err)
+	}
+	
+	// 合并过滤器规则到路由配置中
+	if baseConfig.Route == nil {
+		baseConfig.Route = &singbox.RouteConfig{}
+	}
+	
+	// 添加过滤器规则到现有规则前面（优先级更高）
+	existingRules := baseConfig.Route.Rules
+	newRules := make([]singbox.RouteRule, 0)
+	
+	// 添加过滤器生成的规则
+	for _, rule := range filterRules {
+		routeRule := singbox.RouteRule{
+			Outbound: rule["outbound"].(string),
+		}
+		
+		if domains, ok := rule["domain"].([]string); ok {
+			routeRule.Domain = domains
+		}
+		if ips, ok := rule["ip"].([]string); ok {
+			routeRule.IP = ips
+		}
+		if port, ok := rule["port"].(string); ok {
+			routeRule.Port = port
+		}
+		
+		newRules = append(newRules, routeRule)
+	}
+	
+	// 添加原有规则
+	newRules = append(newRules, existingRules...)
+	baseConfig.Route.Rules = newRules
+	
+	// 更新sing-box配置
+	return c.singboxMgr.UpdateConfig(baseConfig)
+}
+
+// loadBaseSingboxConfig 加载基础sing-box配置
+func (c *Client) loadBaseSingboxConfig() (*singbox.Config, error) {
+	// 这里可以从模板文件加载基础配置
+	// 或者从当前配置中提取基础部分
+	current := c.singboxMgr.GetConfig()
+	if current != nil {
+		return current, nil
+	}
+	
+	// 返回默认配置
+	return &singbox.Config{
+		Log: &singbox.LogConfig{
+			Level:     "info",
+			Timestamp: true,
+		},
+		DNS: &singbox.DNSConfig{
+			Servers: []singbox.DNSServer{
+				{Tag: "cloudflare", Address: "1.1.1.1"},
+				{Tag: "local", Address: "223.5.5.5"},
+			},
+		},
+		Inbounds: []singbox.Inbound{
+			{
+				Tag:    "socks",
+				Type:   "socks",
+				Listen: "127.0.0.1",
+				Port:   1080,
+			},
+			{
+				Tag:    "http",
+				Type:   "http",
+				Listen: "127.0.0.1",
+				Port:   8888,
+			},
+		},
+		Outbounds: []singbox.Outbound{
+			{Tag: "direct", Type: "direct"},
+			{Tag: "block", Type: "block"},
+		},
+		Route: &singbox.RouteConfig{
+			Rules: []singbox.RouteRule{},
+		},
+	}, nil
+}
+
+// GetFilterVersion 获取当前过滤器配置版本
+func (c *Client) GetFilterVersion() string {
+	return c.filterMgr.GetCurrentVersion()
 }
 

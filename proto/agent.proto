@@ -14,6 +14,14 @@ service AgentService {
     rpc UpdateRules(RulesRequest) returns (RulesResponse);
     // 获取节点状态
     rpc GetStatus(StatusRequest) returns (StatusResponse);
+    // 更新黑名单
+    rpc UpdateBlacklist(BlacklistRequest) returns (BlacklistResponse);
+    // 更新白名单
+    rpc UpdateWhitelist(WhitelistRequest) returns (WhitelistResponse);
+    // 获取黑白名单配置
+    rpc GetFilterConfig(FilterConfigRequest) returns (FilterConfigResponse);
+    // 回滚配置
+    rpc RollbackConfig(RollbackRequest) returns (RollbackResponse);
 }
 
 // 注册请求
@@ -99,4 +107,79 @@ message Rule {
     int32 priority = 4;
     bool enabled = 5;
     map<string, string> metadata = 6;
+}
+
+// 黑名单请求
+message BlacklistRequest {
+    string agent_id = 1;
+    string protocol = 2; // http, https, socks5, etc.
+    repeated string domains = 3;
+    repeated string ips = 4;
+    repeated string ports = 5;
+    string operation = 6; // add, remove, replace, clear
+}
+
+// 黑名单响应
+message BlacklistResponse {
+    bool success = 1;
+    string message = 2;
+    string config_version = 3;
+}
+
+// 白名单请求
+message WhitelistRequest {
+    string agent_id = 1;
+    string protocol = 2; // http, https, socks5, etc.
+    repeated string domains = 3;
+    repeated string ips = 4;
+    repeated string ports = 5;
+    string operation = 6; // add, remove, replace, clear
+}
+
+// 白名单响应
+message WhitelistResponse {
+    bool success = 1;
+    string message = 2;
+    string config_version = 3;
+}
+
+// 过滤配置请求
+message FilterConfigRequest {
+    string agent_id = 1;
+    string protocol = 2; // 如果为空，返回所有协议的配置
+}
+
+// 过滤配置响应
+message FilterConfigResponse {
+    bool success = 1;
+    string message = 2;
+    repeated ProtocolFilter filters = 3;
+}
+
+// 协议过滤器
+message ProtocolFilter {
+    string protocol = 1;
+    repeated string blacklist_domains = 2;
+    repeated string blacklist_ips = 3;
+    repeated string blacklist_ports = 4;
+    repeated string whitelist_domains = 5;
+    repeated string whitelist_ips = 6;
+    repeated string whitelist_ports = 7;
+    bool enabled = 8;
+    string last_updated = 9;
+}
+
+// 回滚请求
+message RollbackRequest {
+    string agent_id = 1;
+    string target_version = 2; // 回滚到的目标版本，如果为空则回滚到上一个版本
+    string reason = 3; // 回滚原因
+}
+
+// 回滚响应
+message RollbackResponse {
+    bool success = 1;
+    string message = 2;
+    string rolled_back_version = 3;
+    string current_version = 4;
 }

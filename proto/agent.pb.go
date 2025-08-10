@@ -756,6 +756,651 @@ func (x *Rule) GetMetadata() map[string]string {
 	return nil
 }
 
+// 黑名单请求
+type BlacklistRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Protocol      string                 `protobuf:"bytes,2,opt,name=protocol,proto3" json:"protocol,omitempty"` // http, https, socks5, etc.
+	Domains       []string               `protobuf:"bytes,3,rep,name=domains,proto3" json:"domains,omitempty"`
+	Ips           []string               `protobuf:"bytes,4,rep,name=ips,proto3" json:"ips,omitempty"`
+	Ports         []string               `protobuf:"bytes,5,rep,name=ports,proto3" json:"ports,omitempty"`
+	Operation     string                 `protobuf:"bytes,6,opt,name=operation,proto3" json:"operation,omitempty"` // add, remove, replace, clear
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlacklistRequest) Reset() {
+	*x = BlacklistRequest{}
+	mi := &file_proto_agent_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlacklistRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlacklistRequest) ProtoMessage() {}
+
+func (x *BlacklistRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlacklistRequest.ProtoReflect.Descriptor instead.
+func (*BlacklistRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *BlacklistRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *BlacklistRequest) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *BlacklistRequest) GetDomains() []string {
+	if x != nil {
+		return x.Domains
+	}
+	return nil
+}
+
+func (x *BlacklistRequest) GetIps() []string {
+	if x != nil {
+		return x.Ips
+	}
+	return nil
+}
+
+func (x *BlacklistRequest) GetPorts() []string {
+	if x != nil {
+		return x.Ports
+	}
+	return nil
+}
+
+func (x *BlacklistRequest) GetOperation() string {
+	if x != nil {
+		return x.Operation
+	}
+	return ""
+}
+
+// 黑名单响应
+type BlacklistResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	ConfigVersion string                 `protobuf:"bytes,3,opt,name=config_version,json=configVersion,proto3" json:"config_version,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BlacklistResponse) Reset() {
+	*x = BlacklistResponse{}
+	mi := &file_proto_agent_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BlacklistResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BlacklistResponse) ProtoMessage() {}
+
+func (x *BlacklistResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BlacklistResponse.ProtoReflect.Descriptor instead.
+func (*BlacklistResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *BlacklistResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *BlacklistResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *BlacklistResponse) GetConfigVersion() string {
+	if x != nil {
+		return x.ConfigVersion
+	}
+	return ""
+}
+
+// 白名单请求
+type WhitelistRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Protocol      string                 `protobuf:"bytes,2,opt,name=protocol,proto3" json:"protocol,omitempty"` // http, https, socks5, etc.
+	Domains       []string               `protobuf:"bytes,3,rep,name=domains,proto3" json:"domains,omitempty"`
+	Ips           []string               `protobuf:"bytes,4,rep,name=ips,proto3" json:"ips,omitempty"`
+	Ports         []string               `protobuf:"bytes,5,rep,name=ports,proto3" json:"ports,omitempty"`
+	Operation     string                 `protobuf:"bytes,6,opt,name=operation,proto3" json:"operation,omitempty"` // add, remove, replace, clear
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WhitelistRequest) Reset() {
+	*x = WhitelistRequest{}
+	mi := &file_proto_agent_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WhitelistRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WhitelistRequest) ProtoMessage() {}
+
+func (x *WhitelistRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WhitelistRequest.ProtoReflect.Descriptor instead.
+func (*WhitelistRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *WhitelistRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *WhitelistRequest) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *WhitelistRequest) GetDomains() []string {
+	if x != nil {
+		return x.Domains
+	}
+	return nil
+}
+
+func (x *WhitelistRequest) GetIps() []string {
+	if x != nil {
+		return x.Ips
+	}
+	return nil
+}
+
+func (x *WhitelistRequest) GetPorts() []string {
+	if x != nil {
+		return x.Ports
+	}
+	return nil
+}
+
+func (x *WhitelistRequest) GetOperation() string {
+	if x != nil {
+		return x.Operation
+	}
+	return ""
+}
+
+// 白名单响应
+type WhitelistResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	ConfigVersion string                 `protobuf:"bytes,3,opt,name=config_version,json=configVersion,proto3" json:"config_version,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WhitelistResponse) Reset() {
+	*x = WhitelistResponse{}
+	mi := &file_proto_agent_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WhitelistResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WhitelistResponse) ProtoMessage() {}
+
+func (x *WhitelistResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WhitelistResponse.ProtoReflect.Descriptor instead.
+func (*WhitelistResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *WhitelistResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *WhitelistResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *WhitelistResponse) GetConfigVersion() string {
+	if x != nil {
+		return x.ConfigVersion
+	}
+	return ""
+}
+
+// 过滤配置请求
+type FilterConfigRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Protocol      string                 `protobuf:"bytes,2,opt,name=protocol,proto3" json:"protocol,omitempty"` // 如果为空，返回所有协议的配置
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FilterConfigRequest) Reset() {
+	*x = FilterConfigRequest{}
+	mi := &file_proto_agent_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterConfigRequest) ProtoMessage() {}
+
+func (x *FilterConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterConfigRequest.ProtoReflect.Descriptor instead.
+func (*FilterConfigRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *FilterConfigRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *FilterConfigRequest) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+// 过滤配置响应
+type FilterConfigResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Filters       []*ProtocolFilter      `protobuf:"bytes,3,rep,name=filters,proto3" json:"filters,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FilterConfigResponse) Reset() {
+	*x = FilterConfigResponse{}
+	mi := &file_proto_agent_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterConfigResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterConfigResponse) ProtoMessage() {}
+
+func (x *FilterConfigResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterConfigResponse.ProtoReflect.Descriptor instead.
+func (*FilterConfigResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *FilterConfigResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *FilterConfigResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *FilterConfigResponse) GetFilters() []*ProtocolFilter {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
+// 协议过滤器
+type ProtocolFilter struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Protocol         string                 `protobuf:"bytes,1,opt,name=protocol,proto3" json:"protocol,omitempty"`
+	BlacklistDomains []string               `protobuf:"bytes,2,rep,name=blacklist_domains,json=blacklistDomains,proto3" json:"blacklist_domains,omitempty"`
+	BlacklistIps     []string               `protobuf:"bytes,3,rep,name=blacklist_ips,json=blacklistIps,proto3" json:"blacklist_ips,omitempty"`
+	BlacklistPorts   []string               `protobuf:"bytes,4,rep,name=blacklist_ports,json=blacklistPorts,proto3" json:"blacklist_ports,omitempty"`
+	WhitelistDomains []string               `protobuf:"bytes,5,rep,name=whitelist_domains,json=whitelistDomains,proto3" json:"whitelist_domains,omitempty"`
+	WhitelistIps     []string               `protobuf:"bytes,6,rep,name=whitelist_ips,json=whitelistIps,proto3" json:"whitelist_ips,omitempty"`
+	WhitelistPorts   []string               `protobuf:"bytes,7,rep,name=whitelist_ports,json=whitelistPorts,proto3" json:"whitelist_ports,omitempty"`
+	Enabled          bool                   `protobuf:"varint,8,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	LastUpdated      string                 `protobuf:"bytes,9,opt,name=last_updated,json=lastUpdated,proto3" json:"last_updated,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *ProtocolFilter) Reset() {
+	*x = ProtocolFilter{}
+	mi := &file_proto_agent_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProtocolFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtocolFilter) ProtoMessage() {}
+
+func (x *ProtocolFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtocolFilter.ProtoReflect.Descriptor instead.
+func (*ProtocolFilter) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ProtocolFilter) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *ProtocolFilter) GetBlacklistDomains() []string {
+	if x != nil {
+		return x.BlacklistDomains
+	}
+	return nil
+}
+
+func (x *ProtocolFilter) GetBlacklistIps() []string {
+	if x != nil {
+		return x.BlacklistIps
+	}
+	return nil
+}
+
+func (x *ProtocolFilter) GetBlacklistPorts() []string {
+	if x != nil {
+		return x.BlacklistPorts
+	}
+	return nil
+}
+
+func (x *ProtocolFilter) GetWhitelistDomains() []string {
+	if x != nil {
+		return x.WhitelistDomains
+	}
+	return nil
+}
+
+func (x *ProtocolFilter) GetWhitelistIps() []string {
+	if x != nil {
+		return x.WhitelistIps
+	}
+	return nil
+}
+
+func (x *ProtocolFilter) GetWhitelistPorts() []string {
+	if x != nil {
+		return x.WhitelistPorts
+	}
+	return nil
+}
+
+func (x *ProtocolFilter) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *ProtocolFilter) GetLastUpdated() string {
+	if x != nil {
+		return x.LastUpdated
+	}
+	return ""
+}
+
+// 回滚请求
+type RollbackRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	TargetVersion string                 `protobuf:"bytes,2,opt,name=target_version,json=targetVersion,proto3" json:"target_version,omitempty"` // 回滚到的目标版本，如果为空则回滚到上一个版本
+	Reason        string                 `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`                                    // 回滚原因
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RollbackRequest) Reset() {
+	*x = RollbackRequest{}
+	mi := &file_proto_agent_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RollbackRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RollbackRequest) ProtoMessage() {}
+
+func (x *RollbackRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RollbackRequest.ProtoReflect.Descriptor instead.
+func (*RollbackRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *RollbackRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *RollbackRequest) GetTargetVersion() string {
+	if x != nil {
+		return x.TargetVersion
+	}
+	return ""
+}
+
+func (x *RollbackRequest) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
+}
+
+// 回滚响应
+type RollbackResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Success           bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message           string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	RolledBackVersion string                 `protobuf:"bytes,3,opt,name=rolled_back_version,json=rolledBackVersion,proto3" json:"rolled_back_version,omitempty"`
+	CurrentVersion    string                 `protobuf:"bytes,4,opt,name=current_version,json=currentVersion,proto3" json:"current_version,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *RollbackResponse) Reset() {
+	*x = RollbackResponse{}
+	mi := &file_proto_agent_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RollbackResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RollbackResponse) ProtoMessage() {}
+
+func (x *RollbackResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RollbackResponse.ProtoReflect.Descriptor instead.
+func (*RollbackResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *RollbackResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *RollbackResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *RollbackResponse) GetRolledBackVersion() string {
+	if x != nil {
+		return x.RolledBackVersion
+	}
+	return ""
+}
+
+func (x *RollbackResponse) GetCurrentVersion() string {
+	if x != nil {
+		return x.CurrentVersion
+	}
+	return ""
+}
+
 var File_proto_agent_proto protoreflect.FileDescriptor
 
 const file_proto_agent_proto_rawDesc = "" +
@@ -827,13 +1472,65 @@ const file_proto_agent_proto_rawDesc = "" +
 	"\bmetadata\x18\x06 \x03(\v2\x19.agent.Rule.MetadataEntryR\bmetadata\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012\xc1\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xa9\x01\n" +
+	"\x10BlacklistRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
+	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x18\n" +
+	"\adomains\x18\x03 \x03(\tR\adomains\x12\x10\n" +
+	"\x03ips\x18\x04 \x03(\tR\x03ips\x12\x14\n" +
+	"\x05ports\x18\x05 \x03(\tR\x05ports\x12\x1c\n" +
+	"\toperation\x18\x06 \x01(\tR\toperation\"n\n" +
+	"\x11BlacklistResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
+	"\x0econfig_version\x18\x03 \x01(\tR\rconfigVersion\"\xa9\x01\n" +
+	"\x10WhitelistRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
+	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x18\n" +
+	"\adomains\x18\x03 \x03(\tR\adomains\x12\x10\n" +
+	"\x03ips\x18\x04 \x03(\tR\x03ips\x12\x14\n" +
+	"\x05ports\x18\x05 \x03(\tR\x05ports\x12\x1c\n" +
+	"\toperation\x18\x06 \x01(\tR\toperation\"n\n" +
+	"\x11WhitelistResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
+	"\x0econfig_version\x18\x03 \x01(\tR\rconfigVersion\"L\n" +
+	"\x13FilterConfigRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
+	"\bprotocol\x18\x02 \x01(\tR\bprotocol\"{\n" +
+	"\x14FilterConfigResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12/\n" +
+	"\afilters\x18\x03 \x03(\v2\x15.agent.ProtocolFilterR\afilters\"\xdf\x02\n" +
+	"\x0eProtocolFilter\x12\x1a\n" +
+	"\bprotocol\x18\x01 \x01(\tR\bprotocol\x12+\n" +
+	"\x11blacklist_domains\x18\x02 \x03(\tR\x10blacklistDomains\x12#\n" +
+	"\rblacklist_ips\x18\x03 \x03(\tR\fblacklistIps\x12'\n" +
+	"\x0fblacklist_ports\x18\x04 \x03(\tR\x0eblacklistPorts\x12+\n" +
+	"\x11whitelist_domains\x18\x05 \x03(\tR\x10whitelistDomains\x12#\n" +
+	"\rwhitelist_ips\x18\x06 \x03(\tR\fwhitelistIps\x12'\n" +
+	"\x0fwhitelist_ports\x18\a \x03(\tR\x0ewhitelistPorts\x12\x18\n" +
+	"\aenabled\x18\b \x01(\bR\aenabled\x12!\n" +
+	"\flast_updated\x18\t \x01(\tR\vlastUpdated\"k\n" +
+	"\x0fRollbackRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12%\n" +
+	"\x0etarget_version\x18\x02 \x01(\tR\rtargetVersion\x12\x16\n" +
+	"\x06reason\x18\x03 \x01(\tR\x06reason\"\x9f\x01\n" +
+	"\x10RollbackResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12.\n" +
+	"\x13rolled_back_version\x18\x03 \x01(\tR\x11rolledBackVersion\x12'\n" +
+	"\x0fcurrent_version\x18\x04 \x01(\tR\x0ecurrentVersion2\xdc\x04\n" +
 	"\fAgentService\x12@\n" +
 	"\rRegisterAgent\x12\x16.agent.RegisterRequest\x1a\x17.agent.RegisterResponse\x12>\n" +
 	"\tHeartbeat\x12\x17.agent.HeartbeatRequest\x1a\x18.agent.HeartbeatResponse\x12;\n" +
 	"\fUpdateConfig\x12\x14.agent.ConfigRequest\x1a\x15.agent.ConfigResponse\x128\n" +
 	"\vUpdateRules\x12\x13.agent.RulesRequest\x1a\x14.agent.RulesResponse\x128\n" +
-	"\tGetStatus\x12\x14.agent.StatusRequest\x1a\x15.agent.StatusResponseB.Z,github.com/xbox/sing-box-manager/proto/agentb\x06proto3"
+	"\tGetStatus\x12\x14.agent.StatusRequest\x1a\x15.agent.StatusResponse\x12D\n" +
+	"\x0fUpdateBlacklist\x12\x17.agent.BlacklistRequest\x1a\x18.agent.BlacklistResponse\x12D\n" +
+	"\x0fUpdateWhitelist\x12\x17.agent.WhitelistRequest\x1a\x18.agent.WhitelistResponse\x12J\n" +
+	"\x0fGetFilterConfig\x12\x1a.agent.FilterConfigRequest\x1a\x1b.agent.FilterConfigResponse\x12A\n" +
+	"\x0eRollbackConfig\x12\x16.agent.RollbackRequest\x1a\x17.agent.RollbackResponseB.Z,github.com/xbox/sing-box-manager/proto/agentb\x06proto3"
 
 var (
 	file_proto_agent_proto_rawDescOnce sync.Once
@@ -847,45 +1544,63 @@ func file_proto_agent_proto_rawDescGZIP() []byte {
 	return file_proto_agent_proto_rawDescData
 }
 
-var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_proto_agent_proto_goTypes = []any{
-	(*RegisterRequest)(nil),   // 0: agent.RegisterRequest
-	(*RegisterResponse)(nil),  // 1: agent.RegisterResponse
-	(*HeartbeatRequest)(nil),  // 2: agent.HeartbeatRequest
-	(*HeartbeatResponse)(nil), // 3: agent.HeartbeatResponse
-	(*ConfigRequest)(nil),     // 4: agent.ConfigRequest
-	(*ConfigResponse)(nil),    // 5: agent.ConfigResponse
-	(*RulesRequest)(nil),      // 6: agent.RulesRequest
-	(*RulesResponse)(nil),     // 7: agent.RulesResponse
-	(*StatusRequest)(nil),     // 8: agent.StatusRequest
-	(*StatusResponse)(nil),    // 9: agent.StatusResponse
-	(*Rule)(nil),              // 10: agent.Rule
-	nil,                       // 11: agent.RegisterRequest.MetadataEntry
-	nil,                       // 12: agent.HeartbeatRequest.MetricsEntry
-	nil,                       // 13: agent.StatusResponse.SystemInfoEntry
-	nil,                       // 14: agent.Rule.MetadataEntry
+	(*RegisterRequest)(nil),      // 0: agent.RegisterRequest
+	(*RegisterResponse)(nil),     // 1: agent.RegisterResponse
+	(*HeartbeatRequest)(nil),     // 2: agent.HeartbeatRequest
+	(*HeartbeatResponse)(nil),    // 3: agent.HeartbeatResponse
+	(*ConfigRequest)(nil),        // 4: agent.ConfigRequest
+	(*ConfigResponse)(nil),       // 5: agent.ConfigResponse
+	(*RulesRequest)(nil),         // 6: agent.RulesRequest
+	(*RulesResponse)(nil),        // 7: agent.RulesResponse
+	(*StatusRequest)(nil),        // 8: agent.StatusRequest
+	(*StatusResponse)(nil),       // 9: agent.StatusResponse
+	(*Rule)(nil),                 // 10: agent.Rule
+	(*BlacklistRequest)(nil),     // 11: agent.BlacklistRequest
+	(*BlacklistResponse)(nil),    // 12: agent.BlacklistResponse
+	(*WhitelistRequest)(nil),     // 13: agent.WhitelistRequest
+	(*WhitelistResponse)(nil),    // 14: agent.WhitelistResponse
+	(*FilterConfigRequest)(nil),  // 15: agent.FilterConfigRequest
+	(*FilterConfigResponse)(nil), // 16: agent.FilterConfigResponse
+	(*ProtocolFilter)(nil),       // 17: agent.ProtocolFilter
+	(*RollbackRequest)(nil),      // 18: agent.RollbackRequest
+	(*RollbackResponse)(nil),     // 19: agent.RollbackResponse
+	nil,                          // 20: agent.RegisterRequest.MetadataEntry
+	nil,                          // 21: agent.HeartbeatRequest.MetricsEntry
+	nil,                          // 22: agent.StatusResponse.SystemInfoEntry
+	nil,                          // 23: agent.Rule.MetadataEntry
 }
 var file_proto_agent_proto_depIdxs = []int32{
-	11, // 0: agent.RegisterRequest.metadata:type_name -> agent.RegisterRequest.MetadataEntry
-	12, // 1: agent.HeartbeatRequest.metrics:type_name -> agent.HeartbeatRequest.MetricsEntry
+	20, // 0: agent.RegisterRequest.metadata:type_name -> agent.RegisterRequest.MetadataEntry
+	21, // 1: agent.HeartbeatRequest.metrics:type_name -> agent.HeartbeatRequest.MetricsEntry
 	10, // 2: agent.RulesRequest.rules:type_name -> agent.Rule
-	13, // 3: agent.StatusResponse.system_info:type_name -> agent.StatusResponse.SystemInfoEntry
-	14, // 4: agent.Rule.metadata:type_name -> agent.Rule.MetadataEntry
-	0,  // 5: agent.AgentService.RegisterAgent:input_type -> agent.RegisterRequest
-	2,  // 6: agent.AgentService.Heartbeat:input_type -> agent.HeartbeatRequest
-	4,  // 7: agent.AgentService.UpdateConfig:input_type -> agent.ConfigRequest
-	6,  // 8: agent.AgentService.UpdateRules:input_type -> agent.RulesRequest
-	8,  // 9: agent.AgentService.GetStatus:input_type -> agent.StatusRequest
-	1,  // 10: agent.AgentService.RegisterAgent:output_type -> agent.RegisterResponse
-	3,  // 11: agent.AgentService.Heartbeat:output_type -> agent.HeartbeatResponse
-	5,  // 12: agent.AgentService.UpdateConfig:output_type -> agent.ConfigResponse
-	7,  // 13: agent.AgentService.UpdateRules:output_type -> agent.RulesResponse
-	9,  // 14: agent.AgentService.GetStatus:output_type -> agent.StatusResponse
-	10, // [10:15] is the sub-list for method output_type
-	5,  // [5:10] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	22, // 3: agent.StatusResponse.system_info:type_name -> agent.StatusResponse.SystemInfoEntry
+	23, // 4: agent.Rule.metadata:type_name -> agent.Rule.MetadataEntry
+	17, // 5: agent.FilterConfigResponse.filters:type_name -> agent.ProtocolFilter
+	0,  // 6: agent.AgentService.RegisterAgent:input_type -> agent.RegisterRequest
+	2,  // 7: agent.AgentService.Heartbeat:input_type -> agent.HeartbeatRequest
+	4,  // 8: agent.AgentService.UpdateConfig:input_type -> agent.ConfigRequest
+	6,  // 9: agent.AgentService.UpdateRules:input_type -> agent.RulesRequest
+	8,  // 10: agent.AgentService.GetStatus:input_type -> agent.StatusRequest
+	11, // 11: agent.AgentService.UpdateBlacklist:input_type -> agent.BlacklistRequest
+	13, // 12: agent.AgentService.UpdateWhitelist:input_type -> agent.WhitelistRequest
+	15, // 13: agent.AgentService.GetFilterConfig:input_type -> agent.FilterConfigRequest
+	18, // 14: agent.AgentService.RollbackConfig:input_type -> agent.RollbackRequest
+	1,  // 15: agent.AgentService.RegisterAgent:output_type -> agent.RegisterResponse
+	3,  // 16: agent.AgentService.Heartbeat:output_type -> agent.HeartbeatResponse
+	5,  // 17: agent.AgentService.UpdateConfig:output_type -> agent.ConfigResponse
+	7,  // 18: agent.AgentService.UpdateRules:output_type -> agent.RulesResponse
+	9,  // 19: agent.AgentService.GetStatus:output_type -> agent.StatusResponse
+	12, // 20: agent.AgentService.UpdateBlacklist:output_type -> agent.BlacklistResponse
+	14, // 21: agent.AgentService.UpdateWhitelist:output_type -> agent.WhitelistResponse
+	16, // 22: agent.AgentService.GetFilterConfig:output_type -> agent.FilterConfigResponse
+	19, // 23: agent.AgentService.RollbackConfig:output_type -> agent.RollbackResponse
+	15, // [15:24] is the sub-list for method output_type
+	6,  // [6:15] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_proto_agent_proto_init() }
@@ -899,7 +1614,7 @@ func file_proto_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_agent_proto_rawDesc), len(file_proto_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

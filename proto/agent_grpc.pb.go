@@ -19,11 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AgentService_RegisterAgent_FullMethodName = "/agent.AgentService/RegisterAgent"
-	AgentService_Heartbeat_FullMethodName     = "/agent.AgentService/Heartbeat"
-	AgentService_UpdateConfig_FullMethodName  = "/agent.AgentService/UpdateConfig"
-	AgentService_UpdateRules_FullMethodName   = "/agent.AgentService/UpdateRules"
-	AgentService_GetStatus_FullMethodName     = "/agent.AgentService/GetStatus"
+	AgentService_RegisterAgent_FullMethodName   = "/agent.AgentService/RegisterAgent"
+	AgentService_Heartbeat_FullMethodName       = "/agent.AgentService/Heartbeat"
+	AgentService_UpdateConfig_FullMethodName    = "/agent.AgentService/UpdateConfig"
+	AgentService_UpdateRules_FullMethodName     = "/agent.AgentService/UpdateRules"
+	AgentService_GetStatus_FullMethodName       = "/agent.AgentService/GetStatus"
+	AgentService_UpdateBlacklist_FullMethodName = "/agent.AgentService/UpdateBlacklist"
+	AgentService_UpdateWhitelist_FullMethodName = "/agent.AgentService/UpdateWhitelist"
+	AgentService_GetFilterConfig_FullMethodName = "/agent.AgentService/GetFilterConfig"
+	AgentService_RollbackConfig_FullMethodName  = "/agent.AgentService/RollbackConfig"
 )
 
 // AgentServiceClient is the client API for AgentService service.
@@ -42,6 +46,14 @@ type AgentServiceClient interface {
 	UpdateRules(ctx context.Context, in *RulesRequest, opts ...grpc.CallOption) (*RulesResponse, error)
 	// 获取节点状态
 	GetStatus(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	// 更新黑名单
+	UpdateBlacklist(ctx context.Context, in *BlacklistRequest, opts ...grpc.CallOption) (*BlacklistResponse, error)
+	// 更新白名单
+	UpdateWhitelist(ctx context.Context, in *WhitelistRequest, opts ...grpc.CallOption) (*WhitelistResponse, error)
+	// 获取黑白名单配置
+	GetFilterConfig(ctx context.Context, in *FilterConfigRequest, opts ...grpc.CallOption) (*FilterConfigResponse, error)
+	// 回滚配置
+	RollbackConfig(ctx context.Context, in *RollbackRequest, opts ...grpc.CallOption) (*RollbackResponse, error)
 }
 
 type agentServiceClient struct {
@@ -102,6 +114,46 @@ func (c *agentServiceClient) GetStatus(ctx context.Context, in *StatusRequest, o
 	return out, nil
 }
 
+func (c *agentServiceClient) UpdateBlacklist(ctx context.Context, in *BlacklistRequest, opts ...grpc.CallOption) (*BlacklistResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlacklistResponse)
+	err := c.cc.Invoke(ctx, AgentService_UpdateBlacklist_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) UpdateWhitelist(ctx context.Context, in *WhitelistRequest, opts ...grpc.CallOption) (*WhitelistResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(WhitelistResponse)
+	err := c.cc.Invoke(ctx, AgentService_UpdateWhitelist_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) GetFilterConfig(ctx context.Context, in *FilterConfigRequest, opts ...grpc.CallOption) (*FilterConfigResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FilterConfigResponse)
+	err := c.cc.Invoke(ctx, AgentService_GetFilterConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) RollbackConfig(ctx context.Context, in *RollbackRequest, opts ...grpc.CallOption) (*RollbackResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RollbackResponse)
+	err := c.cc.Invoke(ctx, AgentService_RollbackConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServiceServer is the server API for AgentService service.
 // All implementations must embed UnimplementedAgentServiceServer
 // for forward compatibility.
@@ -118,6 +170,14 @@ type AgentServiceServer interface {
 	UpdateRules(context.Context, *RulesRequest) (*RulesResponse, error)
 	// 获取节点状态
 	GetStatus(context.Context, *StatusRequest) (*StatusResponse, error)
+	// 更新黑名单
+	UpdateBlacklist(context.Context, *BlacklistRequest) (*BlacklistResponse, error)
+	// 更新白名单
+	UpdateWhitelist(context.Context, *WhitelistRequest) (*WhitelistResponse, error)
+	// 获取黑白名单配置
+	GetFilterConfig(context.Context, *FilterConfigRequest) (*FilterConfigResponse, error)
+	// 回滚配置
+	RollbackConfig(context.Context, *RollbackRequest) (*RollbackResponse, error)
 	mustEmbedUnimplementedAgentServiceServer()
 }
 
@@ -142,6 +202,18 @@ func (UnimplementedAgentServiceServer) UpdateRules(context.Context, *RulesReques
 }
 func (UnimplementedAgentServiceServer) GetStatus(context.Context, *StatusRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStatus not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateBlacklist(context.Context, *BlacklistRequest) (*BlacklistResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBlacklist not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateWhitelist(context.Context, *WhitelistRequest) (*WhitelistResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateWhitelist not implemented")
+}
+func (UnimplementedAgentServiceServer) GetFilterConfig(context.Context, *FilterConfigRequest) (*FilterConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFilterConfig not implemented")
+}
+func (UnimplementedAgentServiceServer) RollbackConfig(context.Context, *RollbackRequest) (*RollbackResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RollbackConfig not implemented")
 }
 func (UnimplementedAgentServiceServer) mustEmbedUnimplementedAgentServiceServer() {}
 func (UnimplementedAgentServiceServer) testEmbeddedByValue()                      {}
@@ -254,6 +326,78 @@ func _AgentService_GetStatus_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_UpdateBlacklist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlacklistRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateBlacklist(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateBlacklist_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateBlacklist(ctx, req.(*BlacklistRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_UpdateWhitelist_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WhitelistRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateWhitelist(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateWhitelist_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateWhitelist(ctx, req.(*WhitelistRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_GetFilterConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FilterConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).GetFilterConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_GetFilterConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).GetFilterConfig(ctx, req.(*FilterConfigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_RollbackConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RollbackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).RollbackConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_RollbackConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).RollbackConfig(ctx, req.(*RollbackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentService_ServiceDesc is the grpc.ServiceDesc for AgentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -280,6 +424,22 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStatus",
 			Handler:    _AgentService_GetStatus_Handler,
+		},
+		{
+			MethodName: "UpdateBlacklist",
+			Handler:    _AgentService_UpdateBlacklist_Handler,
+		},
+		{
+			MethodName: "UpdateWhitelist",
+			Handler:    _AgentService_UpdateWhitelist_Handler,
+		},
+		{
+			MethodName: "GetFilterConfig",
+			Handler:    _AgentService_GetFilterConfig_Handler,
+		},
+		{
+			MethodName: "RollbackConfig",
+			Handler:    _AgentService_RollbackConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

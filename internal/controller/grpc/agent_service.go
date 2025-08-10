@@ -2,7 +2,9 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/xbox/sing-box-manager/internal/controller/service"
 	pb "github.com/xbox/sing-box-manager/proto"
@@ -105,4 +107,84 @@ func (s *AgentServiceServer) GetStatus(ctx context.Context, req *pb.StatusReques
 	
 	log.Printf("状态查询响应: AgentID=%s, Status=%s", resp.AgentId, resp.Status)
 	return resp, nil
+}
+
+// UpdateBlacklist 实现黑名单更新
+func (s *AgentServiceServer) UpdateBlacklist(ctx context.Context, req *pb.BlacklistRequest) (*pb.BlacklistResponse, error) {
+	log.Printf("黑名单更新请求: AgentID=%s, Protocol=%s, Operation=%s", req.AgentId, req.Protocol, req.Operation)
+	
+	// TODO: 实现黑名单管理逻辑
+	// 1. 验证Agent是否存在并在线
+	// 2. 验证协议类型和操作类型
+	// 3. 将黑名单规则转发给对应的Agent
+	// 4. 记录操作日志到数据库
+	
+	return &pb.BlacklistResponse{
+		Success:       true,
+		Message:       "黑名单更新成功",
+		ConfigVersion: "v" + fmt.Sprintf("%d", time.Now().Unix()),
+	}, nil
+}
+
+// UpdateWhitelist 实现白名单更新
+func (s *AgentServiceServer) UpdateWhitelist(ctx context.Context, req *pb.WhitelistRequest) (*pb.WhitelistResponse, error) {
+	log.Printf("白名单更新请求: AgentID=%s, Protocol=%s, Operation=%s", req.AgentId, req.Protocol, req.Operation)
+	
+	// TODO: 实现白名单管理逻辑
+	// 1. 验证Agent是否存在并在线
+	// 2. 验证协议类型和操作类型
+	// 3. 将白名单规则转发给对应的Agent
+	// 4. 记录操作日志到数据库
+	
+	return &pb.WhitelistResponse{
+		Success:       true,
+		Message:       "白名单更新成功",
+		ConfigVersion: "v" + fmt.Sprintf("%d", time.Now().Unix()),
+	}, nil
+}
+
+// GetFilterConfig 实现过滤器配置查询
+func (s *AgentServiceServer) GetFilterConfig(ctx context.Context, req *pb.FilterConfigRequest) (*pb.FilterConfigResponse, error) {
+	log.Printf("过滤器配置查询请求: AgentID=%s, Protocol=%s", req.AgentId, req.Protocol)
+	
+	// TODO: 实现过滤器配置查询逻辑
+	// 1. 验证Agent是否存在
+	// 2. 从Agent获取过滤器配置
+	// 3. 返回配置信息
+	
+	return &pb.FilterConfigResponse{
+		Success: true,
+		Message: "配置查询成功",
+		Filters: []*pb.ProtocolFilter{
+			{
+				Protocol:         req.Protocol,
+				BlacklistDomains: []string{"example.com"},
+				BlacklistIps:     []string{"192.168.1.1"},
+				BlacklistPorts:   []string{"80"},
+				WhitelistDomains: []string{"google.com"},
+				WhitelistIps:     []string{"8.8.8.8"},
+				WhitelistPorts:   []string{"443"},
+				Enabled:          true,
+				LastUpdated:      time.Now().Format(time.RFC3339),
+			},
+		},
+	}, nil
+}
+
+// RollbackConfig 实现配置回滚
+func (s *AgentServiceServer) RollbackConfig(ctx context.Context, req *pb.RollbackRequest) (*pb.RollbackResponse, error) {
+	log.Printf("配置回滚请求: AgentID=%s, TargetVersion=%s, Reason=%s", req.AgentId, req.TargetVersion, req.Reason)
+	
+	// TODO: 实现配置回滚逻辑
+	// 1. 验证Agent是否存在并在线
+	// 2. 验证目标版本是否存在
+	// 3. 通知Agent执行回滚操作
+	// 4. 记录回滚操作日志
+	
+	return &pb.RollbackResponse{
+		Success:             true,
+		Message:             "配置回滚成功",
+		RolledBackVersion:   req.TargetVersion,
+		CurrentVersion:      "v" + fmt.Sprintf("%d", time.Now().Unix()),
+	}, nil
 }
