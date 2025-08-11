@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -50,8 +51,15 @@ func NewFilterManager(configPath string) *FilterManager {
 	// 加载现有配置
 	if err := fm.loadConfig(); err != nil {
 		log.Printf("加载过滤器配置失败: %v", err)
+		log.Printf("正在创建默认过滤器配置...")
 		// 初始化默认协议
 		fm.initDefaultFilters()
+		// 保存默认配置到文件
+		if err := fm.saveConfig(); err != nil {
+			log.Printf("保存默认配置失败: %v", err)
+		} else {
+			log.Printf("默认过滤器配置创建成功: %s", fm.configPath)
+		}
 	}
 	
 	return fm
@@ -326,6 +334,11 @@ func (fm *FilterManager) saveConfig() error {
 
 // saveConfigFile 保存配置文件
 func (fm *FilterManager) saveConfigFile() error {
+	// 确保配置目录存在
+	if err := os.MkdirAll(filepath.Dir(fm.configPath), 0755); err != nil {
+		return fmt.Errorf("创建配置目录失败: %v", err)
+	}
+	
 	config := FilterConfig{
 		Version:   fm.currentVersion,
 		Timestamp: time.Now(),

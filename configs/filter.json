@@ -1,0 +1,83 @@
+{
+  "version": "v1724771542",
+  "timestamp": "2025-08-10T21:32:42Z",
+  "filters": {
+    "http": {
+      "protocol": "http",
+      "blacklist_domains": ["www.coingecko.com"],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T22:50:56Z"
+    },
+    "https": {
+      "protocol": "https",
+      "blacklist_domains": ["www.coingecko.com"],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T22:50:56Z"
+    },
+    "socks5": {
+      "protocol": "socks5",
+      "blacklist_domains": [],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T21:32:42Z"
+    },
+    "shadowsocks": {
+      "protocol": "shadowsocks",
+      "blacklist_domains": [],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T21:32:42Z"
+    },
+    "vmess": {
+      "protocol": "vmess",
+      "blacklist_domains": [],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T21:32:42Z"
+    },
+    "trojan": {
+      "protocol": "trojan",
+      "blacklist_domains": [],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T21:32:42Z"
+    },
+    "vless": {
+      "protocol": "vless",
+      "blacklist_domains": [],
+      "blacklist_ips": [],
+      "blacklist_ports": [],
+      "whitelist_domains": [],
+      "whitelist_ips": [],
+      "whitelist_ports": [],
+      "enabled": true,
+      "last_updated": "2025-08-10T21:32:42Z"
+    }
+  }
+}

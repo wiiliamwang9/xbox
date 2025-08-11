@@ -1,0 +1,149 @@
+2025/08/11 00:18:41 Xbox Controller 0.1.0 启动中...
+2025/08/11 00:18:41 数据库连接成功
+2025/08/11 00:18:41 Controller服务已启动
+2025/08/11 00:18:41 gRPC地址: 0.0.0.0:9090
+2025/08/11 00:18:41 HTTP地址: 0.0.0.0:9000
+2025/08/11 00:18:41 过滤器管理路由已注册 (Gin版本)
+2025/08/11 00:18:41 gRPC服务器启动成功，监听地址: 0.0.0.0:9090
+2025/08/11 00:18:41 HTTP API服务器启动成功，监听地址: 0.0.0.0:9000
+2025/08/11 00:18:47 收到心跳: AgentID=debian-1754880857, Status=online
+[GIN] 2025/08/11 - 00:18:51 | 200 |        30.6µs |       127.0.0.1 | GET      "/health"
+2025/08/11 00:18:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:19:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:19:23 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/08/11 - 00:19:40 | 200 |    1.390715ms |       127.0.0.1 | GET      "/api/v1/agents/ip-ranges"
+[GIN] 2025/08/11 - 00:19:47 | 200 |    1.932821ms |       127.0.0.1 | GET      "/api/v1/agents"
+2025/08/11 00:19:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:19:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:19:57 Agent注册请求: ID=debian-1754885997, Hostname=debian, IP=195.78.55.64
+
+2025/08/11 00:19:57 [31;1m/root/wl/code/xbox/internal/controller/repository/agent_repo.go:52 [35;1mrecord not found
+[0m[33m[1.040ms] [34;1m[rows:0][0m SELECT * FROM `agents` WHERE id = 'debian-1754885997' AND `agents`.`deleted_at` IS NULL ORDER BY `agents`.`id` LIMIT 1
+2025/08/11 00:19:57 Agent注册响应: Success=true, Message=Agent注册成功
+2025/08/11 00:20:17 收到心跳: AgentID=debian-1754880857, Status=online
+[GIN] 2025/08/11 - 00:20:20 | 200 |    1.298114ms |       127.0.0.1 | GET      "/api/v1/agents/ip-ranges"
+2025/08/11 00:20:23 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/08/11 - 00:20:25 | 200 |    1.992521ms |       127.0.0.1 | GET      "/api/v1/agents/ip-ranges?country=United+States"
+2025/08/11 00:20:27 收到心跳: AgentID=debian-1754885997, Status=online
+[GIN] 2025/08/11 - 00:20:44 | 200 |    1.594618ms |       127.0.0.1 | GET      "/api/v1/agents/ip-ranges"
+[GIN] 2025/08/11 - 00:20:44 | 200 |      948.01µs |       127.0.0.1 | GET      "/api/v1/agents/ip-ranges?country=United+States"
+2025/08/11 00:20:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:20:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:20:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:21:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:21:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:21:27 收到心跳: AgentID=debian-1754885997, Status=online
+[GIN] 2025/08/11 - 00:21:38 | 200 |    1.214213ms |       127.0.0.1 | GET      "/api/v1/agents/ip-ranges"
+2025/08/11 00:21:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:21:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:21:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:22:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:22:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:22:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:22:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:22:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:22:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:23:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:23:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:23:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:23:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:23:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:23:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:24:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:24:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:24:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:24:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:24:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:24:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:25:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:25:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:25:27 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:25:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:25:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:25:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:26:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:26:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:26:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:26:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:26:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:26:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:27:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:27:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:27:27 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:27:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:27:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:27:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:28:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:28:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:28:27 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:28:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:28:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:28:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:29:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:29:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:29:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:29:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:29:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:29:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:30:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:30:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:30:27 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:30:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:30:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:30:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:31:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:31:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:31:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:31:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:31:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:31:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:32:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:32:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:32:27 收到心跳: AgentID=debian-1754885997, Status=online
+[GIN] 2025/08/11 - 00:32:29 | 200 |    1.434014ms |       127.0.0.1 | GET      "/api/v1/agents"
+[GIN] 2025/08/11 - 00:32:36 | 404 |       3.101µs |       127.0.0.1 | POST     "/api/v1/agents/uninstall"
+2025/08/11 00:32:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:32:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:32:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:33:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:33:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:33:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:33:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:33:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:33:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:34:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:34:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:34:27 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:34:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:34:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:34:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:35:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:35:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:35:28 收到心跳: AgentID=debian-1754885997, Status=online
+[GIN] 2025/08/11 - 00:35:42 | 404 |         4.6µs |       127.0.0.1 | POST     "/api/v1/agents/uninstall"
+2025/08/11 00:35:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:35:53 收到心跳: AgentID=debian-1753875293, Status=online
+[GIN] 2025/08/11 - 00:35:56 | 404 |         3.5µs |       127.0.0.1 | POST     "/api/v1/agents/uninstall"
+2025/08/11 00:35:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:36:17 收到心跳: AgentID=debian-1754880857, Status=online
+[GIN] 2025/08/11 - 00:36:18 | 404 |         3.6µs |       127.0.0.1 | POST     "/api/v1/agents/uninstall"
+2025/08/11 00:36:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:36:27 收到心跳: AgentID=debian-1754885997, Status=online
+[GIN] 2025/08/11 - 00:36:29 | 404 |         3.3µs |       127.0.0.1 | POST     "/api/v1/agents/uninstall"
+2025/08/11 00:36:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:36:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:36:57 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:37:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:37:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:37:28 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:37:47 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:37:53 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:37:58 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:38:17 收到心跳: AgentID=debian-1754880857, Status=online
+2025/08/11 00:38:23 收到心跳: AgentID=debian-1753875293, Status=online
+2025/08/11 00:38:27 收到心跳: AgentID=debian-1754885997, Status=online
+2025/08/11 00:38:44 正在关闭服务...
+2025/08/11 00:38:44 正在停止gRPC服务器...
+2025/08/11 00:38:44 gRPC服务器已停止
+2025/08/11 00:38:44 正在停止HTTP服务器...
+2025/08/11 00:38:44 HTTP服务器启动失败: http: Server closed

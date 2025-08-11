@@ -20,9 +20,10 @@ The system follows a distributed microservices architecture with two main compon
 ### Agent (Node Proxy)
 - **Language**: Go 1.23+ 
 - **Communication**: gRPC client to Controller
-- **Process Management**: sing-box binary lifecycle management
+- **Process Management**: sing-box binary lifecycle management with automatic installation
 - **Monitoring**: System metrics collection and reporting
-- **Responsibilities**: sing-box management, system monitoring, heartbeat reporting
+- **Configuration**: Automatic sing-box configuration parsing and detailed logging
+- **Responsibilities**: sing-box management, system monitoring, heartbeat reporting, configuration validation
 
 ### Supporting Services
 - **MySQL**: Relational data storage (nodes, configs, rules)
@@ -62,9 +63,9 @@ make run-agent
 make init-db
 ```
 
-### Docker Deployment
+### Docker Deployment (Recommended)
 ```bash
-# Full system installation (recommended for development)
+# Full system installation
 ./scripts/deploy.sh install
 
 # Service management
@@ -77,6 +78,44 @@ make init-db
 ./scripts/deploy.sh logs [service_name]  # View logs
 ./scripts/deploy.sh backup               # Backup data
 ```
+
+### Agent Deployment
+```bash
+# Deploy agent to remote node (recommended for production)
+./scripts/deploy_agent.sh <remote_ip> <ssh_password> [controller_ip]
+
+# Test Agent startup flow with sing-box installation
+./test_agent_startup.sh
+
+# This script will:
+# - Check and install sing-box automatically
+# - Start Agent with configuration validation
+# - Output detailed sing-box configuration info
+# - Verify all startup processes
+```
+
+## Project Scripts
+
+The project includes streamlined deployment and utility scripts:
+
+### Core Scripts
+- **`scripts/deploy.sh`** - Main Docker-based deployment script (install, start, stop, status)
+- **`scripts/deploy_agent.sh`** - Remote agent deployment via SSH
+- **`scripts/generate_proto.sh`** - Protocol buffer code generation
+
+### Database Scripts
+- **`scripts/init.sql`** - Main database initialization schema
+- **`scripts/simple-init.sql`** - Simplified database schema
+- **`scripts/add_ip_range_fields.sql`** - IP range management schema additions
+- **`scripts/create_multiplex_table.sql`** - Multiplex configuration table schema
+
+### Test Scripts (Root Level)
+- **`test_agent_startup.sh`** - Agent startup and sing-box installation testing
+- **`test_filter_functionality.sh`** - Protocol filter management testing
+- **`test_multiplex_api.sh`** - Multiplex API functionality testing
+- **`test_agent_multiplex_logs.sh`** - Agent multiplex logging verification
+- **`test_agent_uninstall.sh`** - Agent uninstallation testing
+- **`test_ip_range_functionality.sh`** - IP range management testing
 
 ## Key Configuration Files
 
@@ -122,7 +161,7 @@ xbox/
 ├── proto/                # gRPC protocol definitions
 ├── api/                  # RESTful API handlers and routes
 ├── configs/              # Configuration templates
-├── scripts/              # Deployment and utility scripts
+├── scripts/              # Core deployment and utility scripts
 └── monitoring/           # Prometheus and Grafana configs
 ```
 
@@ -142,6 +181,13 @@ xbox/
 - `PUT /api/v1/rules/{id}` - Update routing rules
 - `GET /metrics` - Prometheus metrics endpoint
 
+### Controller HTTP API (Port 9000) - Filter Management
+- `POST /api/v1/filter/blacklist` - Update protocol blacklist rules
+- `POST /api/v1/filter/whitelist` - Update protocol whitelist rules
+- `GET /api/v1/filter/config/{agent_id}` - Get agent filter configuration
+- `GET /api/v1/filter/status/{agent_id}` - Get agent filter status
+- `POST /api/v1/filter/rollback` - Rollback filter configuration
+
 ### Agent HTTP API (Port 8081)
 - `GET /health` - Health check endpoint
 - `GET /live` - Liveness probe
@@ -151,6 +197,7 @@ xbox/
 
 ### gRPC Services
 - **AgentService**: Agent registration, heartbeat, configuration sync
+- **FilterService**: Protocol-based blacklist/whitelist management
 - **Streaming**: Real-time configuration updates and status reporting
 
 ## Development Workflow
@@ -221,6 +268,33 @@ curl http://localhost:8080/api/v1/agents
 - Monitor resource usage via Grafana dashboards
 - Verify sing-box proxy performance under load
 
+### Filter Functionality Testing
+```bash
+# Test protocol-based filter management
+./test_filter_functionality.sh
+
+# Test with specific agent ID
+./test_filter_functionality.sh --agent-id your-agent-id
+
+# Test with custom Controller URL
+./test_filter_functionality.sh --url http://192.168.1.100:9000/api/v1
+```
+
+### Integration with SaaS Platform Testing
+```bash
+# Quick deployment test (recommended for initial testing)
+./quick_deploy_test.sh
+
+# Complete test suite (comprehensive testing)
+./run_xbox_tests.sh
+
+# Configuration management testing
+./xbox_config_management_test.sh
+
+# Full deployment test
+./xbox_test_deployment.sh
+```
+
 ## Security Considerations
 
 - **Network Isolation**: Services communicate via Docker internal network
@@ -241,3 +315,176 @@ curl http://localhost:8080/api/v1/agents
 | Process Management | Native Go + sing-box | Proxy service management |
 | Configuration | Viper + YAML | Application configuration |
 | Logging | Logrus + Lumberjack | Structured logging with rotation |
+| Web Framework | Gin + Gorilla Mux | HTTP API and routing |
+
+## Filter Management System
+
+### Protocol-based Filtering
+The system supports advanced protocol-level filtering with blacklist/whitelist capabilities:
+
+- **Supported Protocols**: HTTP, HTTPS, SOCKS5, Shadowsocks, VMess, Trojan, VLESS
+- **Filter Types**: Domain, IP address, and port-based filtering
+- **Operations**: Add, remove, replace, clear operations for dynamic rule management
+- **Configuration**: JSON-based configuration with version control and rollback support
+- **Integration**: Automatic sing-box configuration generation and hot-reload
+
+## Multiplex Configuration System
+
+### Connection Limit Management
+The system provides advanced multiplex configuration management for optimizing proxy connection performance:
+
+- **Supported Protocols**: VMess, VLESS, Trojan, Shadowsocks
+- **Key Features**:
+  - Dynamic connection limit configuration via REST API
+  - Real-time configuration updates without service restart
+  - Database persistence with version control
+  - Batch configuration operations
+  - Statistical monitoring and reporting
+- **Configuration Parameters**:
+  - `max_connections`: Maximum connection count (1-32)
+  - `min_streams`: Minimum stream count (1-32) 
+  - `padding`: Enable/disable padding
+  - `brutal`: Congestion control configuration (optional)
+- **Constraints**: Only `max_connections` is configured (as per sing-box best practices)
+- **Prerequisites**: Multiplex must be enabled before applying connection limits
+
+### Agent Configuration Logging
+The Agent provides comprehensive logging for multiplex configuration updates:
+
+- **Detailed Request Logging**: Full request parameters including protocol, connection limits, and Brutal settings
+- **Configuration Comparison**: Shows original vs. new configuration for each outbound
+- **Step-by-Step Process**: Logs each stage of the configuration update process
+- **Performance Metrics**: Records operation timing and success/failure status
+- **Sing-box Integration**: Detailed logging of sing-box configuration application
+
+#### Example Agent Log Output
+```
+=== 收到多路复用配置更新请求 ===
+Agent ID: test-agent-001
+Protocol: vmess
+配置详情:
+  启用状态: true
+  协议: smux
+  最大连接数: 8
+  最小流数: 4
+  填充: false
+  Brutal配置: map[down:200 Mbps up:100 Mbps]
+正在更新sing-box多路复用配置...
+找到匹配的出站配置: Tag=vmess-out, Type=vmess
+  原配置: 未配置
+  新配置: enabled=true, max_conn=8, min_streams=4, padding=false
+  设置Brutal上传带宽: 100 Mbps
+  设置Brutal下载带宽: 200 Mbps
+多路复用配置更新完成，影响的出站: [vmess-out]
+正在应用多路复用配置到sing-box...
+sing-box多路复用配置应用成功
+多路复用配置更新成功 (耗时: 45.2ms)
+=== 多路复用配置更新请求处理完成 ===
+```
+
+### Multiplex Configuration Commands
+```bash
+# Test multiplex API functionality
+./test_multiplex_api.sh
+
+# Test Agent multiplex logs and configuration updates
+./test_agent_multiplex_logs.sh
+
+# Update multiplex configuration via API
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"agent_id": "agent-id", "protocol": "vmess", "enabled": true, "max_connections": 8}' \
+  http://localhost:9000/api/v1/multiplex/config
+
+# Get multiplex configuration
+curl -X GET http://localhost:9000/api/v1/multiplex/config/agent-id?protocol=vmess
+
+# Get multiplex statistics
+curl -X GET http://localhost:9000/api/v1/multiplex/status
+
+# Monitor Agent logs for configuration updates
+tail -f logs/xbox/agents/agent.log | grep -i multiplex
+```
+
+### Filter Management Commands
+```bash
+# Test filter functionality
+./test_filter_functionality.sh
+
+# Add blacklist rules via API
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"agent_id": "agent-id", "protocol": "http", "domains": ["blocked.site"], "operation": "add"}' \
+  http://localhost:9000/api/v1/filter/blacklist
+
+# Get filter configuration
+curl -X GET http://localhost:9000/api/v1/filter/config/agent-id
+
+# Rollback configuration
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"agent_id": "agent-id", "reason": "rollback test"}' \
+  http://localhost:9000/api/v1/filter/rollback
+```
+
+## Integration Testing Framework
+
+The system includes comprehensive integration testing capabilities:
+
+### Test Coverage
+- **Agent Deployment**: SSH-based automated deployment to remote nodes
+- **Database Synchronization**: Node information sync between Xbox Controller and SaaS Backend
+- **sing-box Integration**: Multi-protocol proxy service deployment and configuration
+- **System Monitoring**: CPU, memory, network monitoring and heartbeat functionality
+- **Configuration Management**: Dynamic configuration updates including blacklist/whitelist rules
+- **API Integration**: REST API testing between SaaS Backend and Xbox Controller
+- **Protocol Support**: Verification of SOCKS, HTTP, Shadowsocks, VMess, Trojan, VLESS protocols
+
+### Test Target Configuration
+- **Target Node**: 165.254.16.244 (configurable)
+- **SSH Authentication**: Password-based (automated via sshpass)
+- **Dependencies**: Automatically installs required tools (sshpass, curl, jq)
+
+## Enhanced Agent Startup Process
+
+The Agent has been enhanced with automatic sing-box installation and detailed configuration reporting:
+
+### Startup Flow
+1. **Environment Check**: Validates Go environment and system tools
+2. **sing-box Installation**: Automatically detects, downloads, and installs sing-box if not present
+3. **Configuration Validation**: Parses and validates sing-box configuration files
+4. **Detailed Logging**: Outputs comprehensive configuration information including:
+   - Log configuration (level, output, timestamp)
+   - DNS settings (servers, rules, FakeIP)
+   - Inbound configurations (protocols, ports, TLS, users)
+   - Outbound configurations (protocols, servers, encryption)
+   - Route rules (domains, IPs, GeoIP, Geosite)
+   - Experimental features (Clash API, V2Ray API, cache files)
+   - NTP configuration
+
+### sing-box Auto Installation
+- **Detection**: Checks both local binary path and system PATH
+- **Download Methods**: 
+  - Primary: Official installation script from `https://sing-box.app/install.sh`
+  - Fallback: Direct GitHub releases download with architecture detection
+- **Supported Platforms**: Linux (amd64, arm64, 386, armv7), Windows, macOS
+- **Version Reporting**: Automatically detects and reports installed version
+
+### Configuration Structure Support
+The Agent now supports complete sing-box configuration parsing with all field types:
+- **Inbounds**: Mixed, HTTP, SOCKS, Shadowsocks, VMess, Trojan, VLESS, Hysteria
+- **Outbounds**: Direct, Block, DNS, all proxy protocols with full configuration options
+- **Advanced Features**: TLS/Reality, Transport layers, Multiplex, ECH, uTLS
+- **Route Rules**: Full routing rule support with GeoIP/Geosite integration
+- **Experimental**: Clash API, V2Ray API, Cache files, Debug options
+
+### Testing and Validation
+Use the provided test script to validate the enhanced startup process:
+
+```bash
+./test_agent_startup.sh
+```
+
+This comprehensive test will verify:
+- Environment dependencies
+- Project building
+- Agent startup with sing-box auto-installation  
+- Configuration parsing and detailed output
+- Process management and cleanup

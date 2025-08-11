@@ -64,9 +64,13 @@ func main() {
 	agentRepo := repository.NewAgentRepository(db)
 	agentService := service.NewAgentService(agentRepo)
 	
+	// 创建Agent客户端和多路复用服务
+	agentClient := service.NewAgentClient()
+	multiplexService := service.NewMultiplexService(db, agentClient)
+	
 	// 创建服务器
 	grpcServer := grpc.NewServer(cfg, agentService)
-	httpServer := api.NewServer(cfg, agentService)
+	httpServer := api.NewServer(cfg, agentService, multiplexService)
 	
 	// 使用WaitGroup等待所有服务启动
 	var wg sync.WaitGroup

@@ -15,16 +15,18 @@ import (
 
 // Server HTTP API服务器
 type Server struct {
-	config       *config.Config
-	httpServer   *http.Server
-	agentService service.AgentService
+	config           *config.Config
+	httpServer       *http.Server
+	agentService     service.AgentService
+	multiplexService service.MultiplexService
 }
 
 // NewServer 创建HTTP服务器实例
-func NewServer(cfg *config.Config, agentService service.AgentService) *Server {
+func NewServer(cfg *config.Config, agentService service.AgentService, multiplexService service.MultiplexService) *Server {
 	return &Server{
-		config:       cfg,
-		agentService: agentService,
+		config:           cfg,
+		agentService:     agentService,
+		multiplexService: multiplexService,
 	}
 }
 
@@ -42,7 +44,7 @@ func (s *Server) Start() error {
 	r.Use(corsMiddleware())
 	
 	// 设置路由
-	routes.SetupRoutes(r, s.agentService)
+	routes.SetupRoutes(r, s.agentService, s.multiplexService)
 	
 	// 创建HTTP服务器
 	s.httpServer = &http.Server{

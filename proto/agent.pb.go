@@ -29,6 +29,7 @@ type RegisterRequest struct {
 	IpAddress     string                 `protobuf:"bytes,3,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
 	Version       string                 `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`
 	Metadata      map[string]string      `protobuf:"bytes,5,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	IpRangeInfo   *IPRangeInfo           `protobuf:"bytes,6,opt,name=ip_range_info,json=ipRangeInfo,proto3" json:"ip_range_info,omitempty"` // IP段信息
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -94,6 +95,13 @@ func (x *RegisterRequest) GetVersion() string {
 func (x *RegisterRequest) GetMetadata() map[string]string {
 	if x != nil {
 		return x.Metadata
+	}
+	return nil
+}
+
+func (x *RegisterRequest) GetIpRangeInfo() *IPRangeInfo {
+	if x != nil {
+		return x.IpRangeInfo
 	}
 	return nil
 }
@@ -165,6 +173,7 @@ type HeartbeatRequest struct {
 	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
 	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 	Metrics       map[string]string      `protobuf:"bytes,3,rep,name=metrics,proto3" json:"metrics,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	IpRangeInfo   *IPRangeInfo           `protobuf:"bytes,4,opt,name=ip_range_info,json=ipRangeInfo,proto3" json:"ip_range_info,omitempty"` // IP段信息（可选，仅在变化时发送）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -216,6 +225,13 @@ func (x *HeartbeatRequest) GetStatus() string {
 func (x *HeartbeatRequest) GetMetrics() map[string]string {
 	if x != nil {
 		return x.Metrics
+	}
+	return nil
+}
+
+func (x *HeartbeatRequest) GetIpRangeInfo() *IPRangeInfo {
+	if x != nil {
+		return x.IpRangeInfo
 	}
 	return nil
 }
@@ -1401,29 +1417,514 @@ func (x *RollbackResponse) GetCurrentVersion() string {
 	return ""
 }
 
+// 多路复用配置请求
+type MultiplexConfigRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	AgentId         string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Protocol        string                 `protobuf:"bytes,2,opt,name=protocol,proto3" json:"protocol,omitempty"` // 协议类型：vmess, vless, trojan, shadowsocks
+	MultiplexConfig *MultiplexConfig       `protobuf:"bytes,3,opt,name=multiplex_config,json=multiplexConfig,proto3" json:"multiplex_config,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *MultiplexConfigRequest) Reset() {
+	*x = MultiplexConfigRequest{}
+	mi := &file_proto_agent_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MultiplexConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MultiplexConfigRequest) ProtoMessage() {}
+
+func (x *MultiplexConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MultiplexConfigRequest.ProtoReflect.Descriptor instead.
+func (*MultiplexConfigRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *MultiplexConfigRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *MultiplexConfigRequest) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *MultiplexConfigRequest) GetMultiplexConfig() *MultiplexConfig {
+	if x != nil {
+		return x.MultiplexConfig
+	}
+	return nil
+}
+
+// 多路复用配置响应
+type MultiplexConfigResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	ConfigVersion string                 `protobuf:"bytes,3,opt,name=config_version,json=configVersion,proto3" json:"config_version,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MultiplexConfigResponse) Reset() {
+	*x = MultiplexConfigResponse{}
+	mi := &file_proto_agent_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MultiplexConfigResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MultiplexConfigResponse) ProtoMessage() {}
+
+func (x *MultiplexConfigResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MultiplexConfigResponse.ProtoReflect.Descriptor instead.
+func (*MultiplexConfigResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *MultiplexConfigResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *MultiplexConfigResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *MultiplexConfigResponse) GetConfigVersion() string {
+	if x != nil {
+		return x.ConfigVersion
+	}
+	return ""
+}
+
+// 多路复用状态请求
+type MultiplexStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AgentId       string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`
+	Protocol      string                 `protobuf:"bytes,2,opt,name=protocol,proto3" json:"protocol,omitempty"` // 如果为空，返回所有协议的配置
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MultiplexStatusRequest) Reset() {
+	*x = MultiplexStatusRequest{}
+	mi := &file_proto_agent_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MultiplexStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MultiplexStatusRequest) ProtoMessage() {}
+
+func (x *MultiplexStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MultiplexStatusRequest.ProtoReflect.Descriptor instead.
+func (*MultiplexStatusRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *MultiplexStatusRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *MultiplexStatusRequest) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+// 多路复用状态响应
+type MultiplexStatusResponse struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Success          bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message          string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	MultiplexConfigs []*ProtocolMultiplex   `protobuf:"bytes,3,rep,name=multiplex_configs,json=multiplexConfigs,proto3" json:"multiplex_configs,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *MultiplexStatusResponse) Reset() {
+	*x = MultiplexStatusResponse{}
+	mi := &file_proto_agent_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MultiplexStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MultiplexStatusResponse) ProtoMessage() {}
+
+func (x *MultiplexStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MultiplexStatusResponse.ProtoReflect.Descriptor instead.
+func (*MultiplexStatusResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *MultiplexStatusResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *MultiplexStatusResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *MultiplexStatusResponse) GetMultiplexConfigs() []*ProtocolMultiplex {
+	if x != nil {
+		return x.MultiplexConfigs
+	}
+	return nil
+}
+
+// 多路复用配置
+type MultiplexConfig struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Enabled        bool                   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`                                                                        // 是否启用多路复用
+	Protocol       string                 `protobuf:"bytes,2,opt,name=protocol,proto3" json:"protocol,omitempty"`                                                                       // 多路复用协议，固定为"smux"
+	MaxConnections int32                  `protobuf:"varint,3,opt,name=max_connections,json=maxConnections,proto3" json:"max_connections,omitempty"`                                    // 最大连接数
+	MinStreams     int32                  `protobuf:"varint,4,opt,name=min_streams,json=minStreams,proto3" json:"min_streams,omitempty"`                                                // 最小流数量
+	Padding        bool                   `protobuf:"varint,5,opt,name=padding,proto3" json:"padding,omitempty"`                                                                        // 是否启用填充
+	Brutal         map[string]string      `protobuf:"bytes,6,rep,name=brutal,proto3" json:"brutal,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // brutal配置（可选）
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *MultiplexConfig) Reset() {
+	*x = MultiplexConfig{}
+	mi := &file_proto_agent_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MultiplexConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MultiplexConfig) ProtoMessage() {}
+
+func (x *MultiplexConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MultiplexConfig.ProtoReflect.Descriptor instead.
+func (*MultiplexConfig) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *MultiplexConfig) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *MultiplexConfig) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *MultiplexConfig) GetMaxConnections() int32 {
+	if x != nil {
+		return x.MaxConnections
+	}
+	return 0
+}
+
+func (x *MultiplexConfig) GetMinStreams() int32 {
+	if x != nil {
+		return x.MinStreams
+	}
+	return 0
+}
+
+func (x *MultiplexConfig) GetPadding() bool {
+	if x != nil {
+		return x.Padding
+	}
+	return false
+}
+
+func (x *MultiplexConfig) GetBrutal() map[string]string {
+	if x != nil {
+		return x.Brutal
+	}
+	return nil
+}
+
+// 协议多路复用配置
+type ProtocolMultiplex struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Protocol        string                 `protobuf:"bytes,1,opt,name=protocol,proto3" json:"protocol,omitempty"`                                      // 协议名称
+	MultiplexConfig *MultiplexConfig       `protobuf:"bytes,2,opt,name=multiplex_config,json=multiplexConfig,proto3" json:"multiplex_config,omitempty"` // 多路复用配置
+	Enabled         bool                   `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`                                       // 该协议是否启用多路复用
+	LastUpdated     string                 `protobuf:"bytes,4,opt,name=last_updated,json=lastUpdated,proto3" json:"last_updated,omitempty"`             // 最后更新时间
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ProtocolMultiplex) Reset() {
+	*x = ProtocolMultiplex{}
+	mi := &file_proto_agent_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProtocolMultiplex) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtocolMultiplex) ProtoMessage() {}
+
+func (x *ProtocolMultiplex) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtocolMultiplex.ProtoReflect.Descriptor instead.
+func (*ProtocolMultiplex) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *ProtocolMultiplex) GetProtocol() string {
+	if x != nil {
+		return x.Protocol
+	}
+	return ""
+}
+
+func (x *ProtocolMultiplex) GetMultiplexConfig() *MultiplexConfig {
+	if x != nil {
+		return x.MultiplexConfig
+	}
+	return nil
+}
+
+func (x *ProtocolMultiplex) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *ProtocolMultiplex) GetLastUpdated() string {
+	if x != nil {
+		return x.LastUpdated
+	}
+	return ""
+}
+
+// IP段信息
+type IPRangeInfo struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	IpRange         string                 `protobuf:"bytes,1,opt,name=ip_range,json=ipRange,proto3" json:"ip_range,omitempty"`                         // IP段，如 192.168.1.0/24 或 10.0.0.0/8
+	Country         string                 `protobuf:"bytes,2,opt,name=country,proto3" json:"country,omitempty"`                                        // 国家
+	Region          string                 `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`                                          // 地区/省份
+	City            string                 `protobuf:"bytes,4,opt,name=city,proto3" json:"city,omitempty"`                                              // 城市
+	Isp             string                 `protobuf:"bytes,5,opt,name=isp,proto3" json:"isp,omitempty"`                                                // 运营商
+	DetectionMethod string                 `protobuf:"bytes,6,opt,name=detection_method,json=detectionMethod,proto3" json:"detection_method,omitempty"` // 检测方法 (auto/manual/api)
+	DetectedAt      string                 `protobuf:"bytes,7,opt,name=detected_at,json=detectedAt,proto3" json:"detected_at,omitempty"`                // 检测时间
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *IPRangeInfo) Reset() {
+	*x = IPRangeInfo{}
+	mi := &file_proto_agent_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IPRangeInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IPRangeInfo) ProtoMessage() {}
+
+func (x *IPRangeInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IPRangeInfo.ProtoReflect.Descriptor instead.
+func (*IPRangeInfo) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *IPRangeInfo) GetIpRange() string {
+	if x != nil {
+		return x.IpRange
+	}
+	return ""
+}
+
+func (x *IPRangeInfo) GetCountry() string {
+	if x != nil {
+		return x.Country
+	}
+	return ""
+}
+
+func (x *IPRangeInfo) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *IPRangeInfo) GetCity() string {
+	if x != nil {
+		return x.City
+	}
+	return ""
+}
+
+func (x *IPRangeInfo) GetIsp() string {
+	if x != nil {
+		return x.Isp
+	}
+	return ""
+}
+
+func (x *IPRangeInfo) GetDetectionMethod() string {
+	if x != nil {
+		return x.DetectionMethod
+	}
+	return ""
+}
+
+func (x *IPRangeInfo) GetDetectedAt() string {
+	if x != nil {
+		return x.DetectedAt
+	}
+	return ""
+}
+
 var File_proto_agent_proto protoreflect.FileDescriptor
 
 const file_proto_agent_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/agent.proto\x12\x05agent\"\x80\x02\n" +
+	"\x11proto/agent.proto\x12\x05agent\"\xb8\x02\n" +
 	"\x0fRegisterRequest\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18\x03 \x01(\tR\tipAddress\x12\x18\n" +
 	"\aversion\x18\x04 \x01(\tR\aversion\x12@\n" +
-	"\bmetadata\x18\x05 \x03(\v2$.agent.RegisterRequest.MetadataEntryR\bmetadata\x1a;\n" +
+	"\bmetadata\x18\x05 \x03(\v2$.agent.RegisterRequest.MetadataEntryR\bmetadata\x126\n" +
+	"\rip_range_info\x18\x06 \x01(\v2\x12.agent.IPRangeInfoR\vipRangeInfo\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\\\n" +
 	"\x10RegisterResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x14\n" +
-	"\x05token\x18\x03 \x01(\tR\x05token\"\xc1\x01\n" +
+	"\x05token\x18\x03 \x01(\tR\x05token\"\xf9\x01\n" +
 	"\x10HeartbeatRequest\x12\x19\n" +
 	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12>\n" +
-	"\ametrics\x18\x03 \x03(\v2$.agent.HeartbeatRequest.MetricsEntryR\ametrics\x1a:\n" +
+	"\ametrics\x18\x03 \x03(\v2$.agent.HeartbeatRequest.MetricsEntryR\ametrics\x126\n" +
+	"\rip_range_info\x18\x04 \x01(\v2\x12.agent.IPRangeInfoR\vipRangeInfo\x1a:\n" +
 	"\fMetricsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x7f\n" +
@@ -1520,7 +2021,47 @@ const file_proto_agent_proto_rawDesc = "" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12.\n" +
 	"\x13rolled_back_version\x18\x03 \x01(\tR\x11rolledBackVersion\x12'\n" +
-	"\x0fcurrent_version\x18\x04 \x01(\tR\x0ecurrentVersion2\xdc\x04\n" +
+	"\x0fcurrent_version\x18\x04 \x01(\tR\x0ecurrentVersion\"\x92\x01\n" +
+	"\x16MultiplexConfigRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
+	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12A\n" +
+	"\x10multiplex_config\x18\x03 \x01(\v2\x16.agent.MultiplexConfigR\x0fmultiplexConfig\"t\n" +
+	"\x17MultiplexConfigResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
+	"\x0econfig_version\x18\x03 \x01(\tR\rconfigVersion\"O\n" +
+	"\x16MultiplexStatusRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12\x1a\n" +
+	"\bprotocol\x18\x02 \x01(\tR\bprotocol\"\x94\x01\n" +
+	"\x17MultiplexStatusResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12E\n" +
+	"\x11multiplex_configs\x18\x03 \x03(\v2\x18.agent.ProtocolMultiplexR\x10multiplexConfigs\"\xa2\x02\n" +
+	"\x0fMultiplexConfig\x12\x18\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x1a\n" +
+	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12'\n" +
+	"\x0fmax_connections\x18\x03 \x01(\x05R\x0emaxConnections\x12\x1f\n" +
+	"\vmin_streams\x18\x04 \x01(\x05R\n" +
+	"minStreams\x12\x18\n" +
+	"\apadding\x18\x05 \x01(\bR\apadding\x12:\n" +
+	"\x06brutal\x18\x06 \x03(\v2\".agent.MultiplexConfig.BrutalEntryR\x06brutal\x1a9\n" +
+	"\vBrutalEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xaf\x01\n" +
+	"\x11ProtocolMultiplex\x12\x1a\n" +
+	"\bprotocol\x18\x01 \x01(\tR\bprotocol\x12A\n" +
+	"\x10multiplex_config\x18\x02 \x01(\v2\x16.agent.MultiplexConfigR\x0fmultiplexConfig\x12\x18\n" +
+	"\aenabled\x18\x03 \x01(\bR\aenabled\x12!\n" +
+	"\flast_updated\x18\x04 \x01(\tR\vlastUpdated\"\xcc\x01\n" +
+	"\vIPRangeInfo\x12\x19\n" +
+	"\bip_range\x18\x01 \x01(\tR\aipRange\x12\x18\n" +
+	"\acountry\x18\x02 \x01(\tR\acountry\x12\x16\n" +
+	"\x06region\x18\x03 \x01(\tR\x06region\x12\x12\n" +
+	"\x04city\x18\x04 \x01(\tR\x04city\x12\x10\n" +
+	"\x03isp\x18\x05 \x01(\tR\x03isp\x12)\n" +
+	"\x10detection_method\x18\x06 \x01(\tR\x0fdetectionMethod\x12\x1f\n" +
+	"\vdetected_at\x18\a \x01(\tR\n" +
+	"detectedAt2\x89\x06\n" +
 	"\fAgentService\x12@\n" +
 	"\rRegisterAgent\x12\x16.agent.RegisterRequest\x1a\x17.agent.RegisterResponse\x12>\n" +
 	"\tHeartbeat\x12\x17.agent.HeartbeatRequest\x1a\x18.agent.HeartbeatResponse\x12;\n" +
@@ -1530,7 +2071,9 @@ const file_proto_agent_proto_rawDesc = "" +
 	"\x0fUpdateBlacklist\x12\x17.agent.BlacklistRequest\x1a\x18.agent.BlacklistResponse\x12D\n" +
 	"\x0fUpdateWhitelist\x12\x17.agent.WhitelistRequest\x1a\x18.agent.WhitelistResponse\x12J\n" +
 	"\x0fGetFilterConfig\x12\x1a.agent.FilterConfigRequest\x1a\x1b.agent.FilterConfigResponse\x12A\n" +
-	"\x0eRollbackConfig\x12\x16.agent.RollbackRequest\x1a\x17.agent.RollbackResponseB.Z,github.com/xbox/sing-box-manager/proto/agentb\x06proto3"
+	"\x0eRollbackConfig\x12\x16.agent.RollbackRequest\x1a\x17.agent.RollbackResponse\x12V\n" +
+	"\x15UpdateMultiplexConfig\x12\x1d.agent.MultiplexConfigRequest\x1a\x1e.agent.MultiplexConfigResponse\x12S\n" +
+	"\x12GetMultiplexConfig\x12\x1d.agent.MultiplexStatusRequest\x1a\x1e.agent.MultiplexStatusResponseB.Z,github.com/xbox/sing-box-manager/proto/agentb\x06proto3"
 
 var (
 	file_proto_agent_proto_rawDescOnce sync.Once
@@ -1544,63 +2087,81 @@ func file_proto_agent_proto_rawDescGZIP() []byte {
 	return file_proto_agent_proto_rawDescData
 }
 
-var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_proto_agent_proto_goTypes = []any{
-	(*RegisterRequest)(nil),      // 0: agent.RegisterRequest
-	(*RegisterResponse)(nil),     // 1: agent.RegisterResponse
-	(*HeartbeatRequest)(nil),     // 2: agent.HeartbeatRequest
-	(*HeartbeatResponse)(nil),    // 3: agent.HeartbeatResponse
-	(*ConfigRequest)(nil),        // 4: agent.ConfigRequest
-	(*ConfigResponse)(nil),       // 5: agent.ConfigResponse
-	(*RulesRequest)(nil),         // 6: agent.RulesRequest
-	(*RulesResponse)(nil),        // 7: agent.RulesResponse
-	(*StatusRequest)(nil),        // 8: agent.StatusRequest
-	(*StatusResponse)(nil),       // 9: agent.StatusResponse
-	(*Rule)(nil),                 // 10: agent.Rule
-	(*BlacklistRequest)(nil),     // 11: agent.BlacklistRequest
-	(*BlacklistResponse)(nil),    // 12: agent.BlacklistResponse
-	(*WhitelistRequest)(nil),     // 13: agent.WhitelistRequest
-	(*WhitelistResponse)(nil),    // 14: agent.WhitelistResponse
-	(*FilterConfigRequest)(nil),  // 15: agent.FilterConfigRequest
-	(*FilterConfigResponse)(nil), // 16: agent.FilterConfigResponse
-	(*ProtocolFilter)(nil),       // 17: agent.ProtocolFilter
-	(*RollbackRequest)(nil),      // 18: agent.RollbackRequest
-	(*RollbackResponse)(nil),     // 19: agent.RollbackResponse
-	nil,                          // 20: agent.RegisterRequest.MetadataEntry
-	nil,                          // 21: agent.HeartbeatRequest.MetricsEntry
-	nil,                          // 22: agent.StatusResponse.SystemInfoEntry
-	nil,                          // 23: agent.Rule.MetadataEntry
+	(*RegisterRequest)(nil),         // 0: agent.RegisterRequest
+	(*RegisterResponse)(nil),        // 1: agent.RegisterResponse
+	(*HeartbeatRequest)(nil),        // 2: agent.HeartbeatRequest
+	(*HeartbeatResponse)(nil),       // 3: agent.HeartbeatResponse
+	(*ConfigRequest)(nil),           // 4: agent.ConfigRequest
+	(*ConfigResponse)(nil),          // 5: agent.ConfigResponse
+	(*RulesRequest)(nil),            // 6: agent.RulesRequest
+	(*RulesResponse)(nil),           // 7: agent.RulesResponse
+	(*StatusRequest)(nil),           // 8: agent.StatusRequest
+	(*StatusResponse)(nil),          // 9: agent.StatusResponse
+	(*Rule)(nil),                    // 10: agent.Rule
+	(*BlacklistRequest)(nil),        // 11: agent.BlacklistRequest
+	(*BlacklistResponse)(nil),       // 12: agent.BlacklistResponse
+	(*WhitelistRequest)(nil),        // 13: agent.WhitelistRequest
+	(*WhitelistResponse)(nil),       // 14: agent.WhitelistResponse
+	(*FilterConfigRequest)(nil),     // 15: agent.FilterConfigRequest
+	(*FilterConfigResponse)(nil),    // 16: agent.FilterConfigResponse
+	(*ProtocolFilter)(nil),          // 17: agent.ProtocolFilter
+	(*RollbackRequest)(nil),         // 18: agent.RollbackRequest
+	(*RollbackResponse)(nil),        // 19: agent.RollbackResponse
+	(*MultiplexConfigRequest)(nil),  // 20: agent.MultiplexConfigRequest
+	(*MultiplexConfigResponse)(nil), // 21: agent.MultiplexConfigResponse
+	(*MultiplexStatusRequest)(nil),  // 22: agent.MultiplexStatusRequest
+	(*MultiplexStatusResponse)(nil), // 23: agent.MultiplexStatusResponse
+	(*MultiplexConfig)(nil),         // 24: agent.MultiplexConfig
+	(*ProtocolMultiplex)(nil),       // 25: agent.ProtocolMultiplex
+	(*IPRangeInfo)(nil),             // 26: agent.IPRangeInfo
+	nil,                             // 27: agent.RegisterRequest.MetadataEntry
+	nil,                             // 28: agent.HeartbeatRequest.MetricsEntry
+	nil,                             // 29: agent.StatusResponse.SystemInfoEntry
+	nil,                             // 30: agent.Rule.MetadataEntry
+	nil,                             // 31: agent.MultiplexConfig.BrutalEntry
 }
 var file_proto_agent_proto_depIdxs = []int32{
-	20, // 0: agent.RegisterRequest.metadata:type_name -> agent.RegisterRequest.MetadataEntry
-	21, // 1: agent.HeartbeatRequest.metrics:type_name -> agent.HeartbeatRequest.MetricsEntry
-	10, // 2: agent.RulesRequest.rules:type_name -> agent.Rule
-	22, // 3: agent.StatusResponse.system_info:type_name -> agent.StatusResponse.SystemInfoEntry
-	23, // 4: agent.Rule.metadata:type_name -> agent.Rule.MetadataEntry
-	17, // 5: agent.FilterConfigResponse.filters:type_name -> agent.ProtocolFilter
-	0,  // 6: agent.AgentService.RegisterAgent:input_type -> agent.RegisterRequest
-	2,  // 7: agent.AgentService.Heartbeat:input_type -> agent.HeartbeatRequest
-	4,  // 8: agent.AgentService.UpdateConfig:input_type -> agent.ConfigRequest
-	6,  // 9: agent.AgentService.UpdateRules:input_type -> agent.RulesRequest
-	8,  // 10: agent.AgentService.GetStatus:input_type -> agent.StatusRequest
-	11, // 11: agent.AgentService.UpdateBlacklist:input_type -> agent.BlacklistRequest
-	13, // 12: agent.AgentService.UpdateWhitelist:input_type -> agent.WhitelistRequest
-	15, // 13: agent.AgentService.GetFilterConfig:input_type -> agent.FilterConfigRequest
-	18, // 14: agent.AgentService.RollbackConfig:input_type -> agent.RollbackRequest
-	1,  // 15: agent.AgentService.RegisterAgent:output_type -> agent.RegisterResponse
-	3,  // 16: agent.AgentService.Heartbeat:output_type -> agent.HeartbeatResponse
-	5,  // 17: agent.AgentService.UpdateConfig:output_type -> agent.ConfigResponse
-	7,  // 18: agent.AgentService.UpdateRules:output_type -> agent.RulesResponse
-	9,  // 19: agent.AgentService.GetStatus:output_type -> agent.StatusResponse
-	12, // 20: agent.AgentService.UpdateBlacklist:output_type -> agent.BlacklistResponse
-	14, // 21: agent.AgentService.UpdateWhitelist:output_type -> agent.WhitelistResponse
-	16, // 22: agent.AgentService.GetFilterConfig:output_type -> agent.FilterConfigResponse
-	19, // 23: agent.AgentService.RollbackConfig:output_type -> agent.RollbackResponse
-	15, // [15:24] is the sub-list for method output_type
-	6,  // [6:15] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	27, // 0: agent.RegisterRequest.metadata:type_name -> agent.RegisterRequest.MetadataEntry
+	26, // 1: agent.RegisterRequest.ip_range_info:type_name -> agent.IPRangeInfo
+	28, // 2: agent.HeartbeatRequest.metrics:type_name -> agent.HeartbeatRequest.MetricsEntry
+	26, // 3: agent.HeartbeatRequest.ip_range_info:type_name -> agent.IPRangeInfo
+	10, // 4: agent.RulesRequest.rules:type_name -> agent.Rule
+	29, // 5: agent.StatusResponse.system_info:type_name -> agent.StatusResponse.SystemInfoEntry
+	30, // 6: agent.Rule.metadata:type_name -> agent.Rule.MetadataEntry
+	17, // 7: agent.FilterConfigResponse.filters:type_name -> agent.ProtocolFilter
+	24, // 8: agent.MultiplexConfigRequest.multiplex_config:type_name -> agent.MultiplexConfig
+	25, // 9: agent.MultiplexStatusResponse.multiplex_configs:type_name -> agent.ProtocolMultiplex
+	31, // 10: agent.MultiplexConfig.brutal:type_name -> agent.MultiplexConfig.BrutalEntry
+	24, // 11: agent.ProtocolMultiplex.multiplex_config:type_name -> agent.MultiplexConfig
+	0,  // 12: agent.AgentService.RegisterAgent:input_type -> agent.RegisterRequest
+	2,  // 13: agent.AgentService.Heartbeat:input_type -> agent.HeartbeatRequest
+	4,  // 14: agent.AgentService.UpdateConfig:input_type -> agent.ConfigRequest
+	6,  // 15: agent.AgentService.UpdateRules:input_type -> agent.RulesRequest
+	8,  // 16: agent.AgentService.GetStatus:input_type -> agent.StatusRequest
+	11, // 17: agent.AgentService.UpdateBlacklist:input_type -> agent.BlacklistRequest
+	13, // 18: agent.AgentService.UpdateWhitelist:input_type -> agent.WhitelistRequest
+	15, // 19: agent.AgentService.GetFilterConfig:input_type -> agent.FilterConfigRequest
+	18, // 20: agent.AgentService.RollbackConfig:input_type -> agent.RollbackRequest
+	20, // 21: agent.AgentService.UpdateMultiplexConfig:input_type -> agent.MultiplexConfigRequest
+	22, // 22: agent.AgentService.GetMultiplexConfig:input_type -> agent.MultiplexStatusRequest
+	1,  // 23: agent.AgentService.RegisterAgent:output_type -> agent.RegisterResponse
+	3,  // 24: agent.AgentService.Heartbeat:output_type -> agent.HeartbeatResponse
+	5,  // 25: agent.AgentService.UpdateConfig:output_type -> agent.ConfigResponse
+	7,  // 26: agent.AgentService.UpdateRules:output_type -> agent.RulesResponse
+	9,  // 27: agent.AgentService.GetStatus:output_type -> agent.StatusResponse
+	12, // 28: agent.AgentService.UpdateBlacklist:output_type -> agent.BlacklistResponse
+	14, // 29: agent.AgentService.UpdateWhitelist:output_type -> agent.WhitelistResponse
+	16, // 30: agent.AgentService.GetFilterConfig:output_type -> agent.FilterConfigResponse
+	19, // 31: agent.AgentService.RollbackConfig:output_type -> agent.RollbackResponse
+	21, // 32: agent.AgentService.UpdateMultiplexConfig:output_type -> agent.MultiplexConfigResponse
+	23, // 33: agent.AgentService.GetMultiplexConfig:output_type -> agent.MultiplexStatusResponse
+	23, // [23:34] is the sub-list for method output_type
+	12, // [12:23] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_proto_agent_proto_init() }
@@ -1614,7 +2175,7 @@ func file_proto_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_agent_proto_rawDesc), len(file_proto_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

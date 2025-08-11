@@ -19,15 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AgentService_RegisterAgent_FullMethodName   = "/agent.AgentService/RegisterAgent"
-	AgentService_Heartbeat_FullMethodName       = "/agent.AgentService/Heartbeat"
-	AgentService_UpdateConfig_FullMethodName    = "/agent.AgentService/UpdateConfig"
-	AgentService_UpdateRules_FullMethodName     = "/agent.AgentService/UpdateRules"
-	AgentService_GetStatus_FullMethodName       = "/agent.AgentService/GetStatus"
-	AgentService_UpdateBlacklist_FullMethodName = "/agent.AgentService/UpdateBlacklist"
-	AgentService_UpdateWhitelist_FullMethodName = "/agent.AgentService/UpdateWhitelist"
-	AgentService_GetFilterConfig_FullMethodName = "/agent.AgentService/GetFilterConfig"
-	AgentService_RollbackConfig_FullMethodName  = "/agent.AgentService/RollbackConfig"
+	AgentService_RegisterAgent_FullMethodName         = "/agent.AgentService/RegisterAgent"
+	AgentService_Heartbeat_FullMethodName             = "/agent.AgentService/Heartbeat"
+	AgentService_UpdateConfig_FullMethodName          = "/agent.AgentService/UpdateConfig"
+	AgentService_UpdateRules_FullMethodName           = "/agent.AgentService/UpdateRules"
+	AgentService_GetStatus_FullMethodName             = "/agent.AgentService/GetStatus"
+	AgentService_UpdateBlacklist_FullMethodName       = "/agent.AgentService/UpdateBlacklist"
+	AgentService_UpdateWhitelist_FullMethodName       = "/agent.AgentService/UpdateWhitelist"
+	AgentService_GetFilterConfig_FullMethodName       = "/agent.AgentService/GetFilterConfig"
+	AgentService_RollbackConfig_FullMethodName        = "/agent.AgentService/RollbackConfig"
+	AgentService_UpdateMultiplexConfig_FullMethodName = "/agent.AgentService/UpdateMultiplexConfig"
+	AgentService_GetMultiplexConfig_FullMethodName    = "/agent.AgentService/GetMultiplexConfig"
 )
 
 // AgentServiceClient is the client API for AgentService service.
@@ -54,6 +56,10 @@ type AgentServiceClient interface {
 	GetFilterConfig(ctx context.Context, in *FilterConfigRequest, opts ...grpc.CallOption) (*FilterConfigResponse, error)
 	// 回滚配置
 	RollbackConfig(ctx context.Context, in *RollbackRequest, opts ...grpc.CallOption) (*RollbackResponse, error)
+	// 更新多路复用配置
+	UpdateMultiplexConfig(ctx context.Context, in *MultiplexConfigRequest, opts ...grpc.CallOption) (*MultiplexConfigResponse, error)
+	// 获取多路复用配置
+	GetMultiplexConfig(ctx context.Context, in *MultiplexStatusRequest, opts ...grpc.CallOption) (*MultiplexStatusResponse, error)
 }
 
 type agentServiceClient struct {
@@ -154,6 +160,26 @@ func (c *agentServiceClient) RollbackConfig(ctx context.Context, in *RollbackReq
 	return out, nil
 }
 
+func (c *agentServiceClient) UpdateMultiplexConfig(ctx context.Context, in *MultiplexConfigRequest, opts ...grpc.CallOption) (*MultiplexConfigResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MultiplexConfigResponse)
+	err := c.cc.Invoke(ctx, AgentService_UpdateMultiplexConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *agentServiceClient) GetMultiplexConfig(ctx context.Context, in *MultiplexStatusRequest, opts ...grpc.CallOption) (*MultiplexStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MultiplexStatusResponse)
+	err := c.cc.Invoke(ctx, AgentService_GetMultiplexConfig_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServiceServer is the server API for AgentService service.
 // All implementations must embed UnimplementedAgentServiceServer
 // for forward compatibility.
@@ -178,6 +204,10 @@ type AgentServiceServer interface {
 	GetFilterConfig(context.Context, *FilterConfigRequest) (*FilterConfigResponse, error)
 	// 回滚配置
 	RollbackConfig(context.Context, *RollbackRequest) (*RollbackResponse, error)
+	// 更新多路复用配置
+	UpdateMultiplexConfig(context.Context, *MultiplexConfigRequest) (*MultiplexConfigResponse, error)
+	// 获取多路复用配置
+	GetMultiplexConfig(context.Context, *MultiplexStatusRequest) (*MultiplexStatusResponse, error)
 	mustEmbedUnimplementedAgentServiceServer()
 }
 
@@ -214,6 +244,12 @@ func (UnimplementedAgentServiceServer) GetFilterConfig(context.Context, *FilterC
 }
 func (UnimplementedAgentServiceServer) RollbackConfig(context.Context, *RollbackRequest) (*RollbackResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RollbackConfig not implemented")
+}
+func (UnimplementedAgentServiceServer) UpdateMultiplexConfig(context.Context, *MultiplexConfigRequest) (*MultiplexConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMultiplexConfig not implemented")
+}
+func (UnimplementedAgentServiceServer) GetMultiplexConfig(context.Context, *MultiplexStatusRequest) (*MultiplexStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMultiplexConfig not implemented")
 }
 func (UnimplementedAgentServiceServer) mustEmbedUnimplementedAgentServiceServer() {}
 func (UnimplementedAgentServiceServer) testEmbeddedByValue()                      {}
@@ -398,6 +434,42 @@ func _AgentService_RollbackConfig_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_UpdateMultiplexConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiplexConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UpdateMultiplexConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UpdateMultiplexConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UpdateMultiplexConfig(ctx, req.(*MultiplexConfigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AgentService_GetMultiplexConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiplexStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).GetMultiplexConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_GetMultiplexConfig_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).GetMultiplexConfig(ctx, req.(*MultiplexStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentService_ServiceDesc is the grpc.ServiceDesc for AgentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -440,6 +512,14 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RollbackConfig",
 			Handler:    _AgentService_RollbackConfig_Handler,
+		},
+		{
+			MethodName: "UpdateMultiplexConfig",
+			Handler:    _AgentService_UpdateMultiplexConfig_Handler,
+		},
+		{
+			MethodName: "GetMultiplexConfig",
+			Handler:    _AgentService_GetMultiplexConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

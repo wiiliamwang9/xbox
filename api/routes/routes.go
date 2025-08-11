@@ -7,9 +7,10 @@ import (
 )
 
 // SetupRoutes 设置API路由
-func SetupRoutes(r *gin.Engine, agentService service.AgentService) {
+func SetupRoutes(r *gin.Engine, agentService service.AgentService, multiplexService service.MultiplexService) {
 	// 创建处理器
 	agentHandler := handlers.NewAgentHandler(agentService)
+	multiplexHandler := handlers.NewMultiplexHandler(multiplexService)
 	
 	// API v1 路由组
 	v1 := r.Group("/api/v1")
@@ -17,16 +18,27 @@ func SetupRoutes(r *gin.Engine, agentService service.AgentService) {
 		// Agent管理路由
 		agents := v1.Group("/agents")
 		{
-			agents.GET("", agentHandler.GetAgents)           // 获取Agent列表
-			agents.GET("/stats", agentHandler.GetAgentStats) // 获取Agent统计
-			agents.GET("/:id", agentHandler.GetAgent)        // 获取单个Agent
-			agents.PUT("/:id", agentHandler.UpdateAgent)     // 更新Agent
-			agents.DELETE("/:id", agentHandler.DeleteAgent)  // 删除Agent
-			agents.POST("/deploy", agentHandler.DeployAgent) // 部署Agent
+			agents.GET("", agentHandler.GetAgents)              // 获取Agent列表
+			agents.GET("/stats", agentHandler.GetAgentStats)    // 获取Agent统计
+			agents.GET("/ip-ranges", agentHandler.GetIPRanges)  // 获取IP段信息
+			agents.GET("/:id", agentHandler.GetAgent)           // 获取单个Agent
+			agents.PUT("/:id", agentHandler.UpdateAgent)        // 更新Agent
+			agents.DELETE("/:id", agentHandler.DeleteAgent)     // 删除Agent
+			agents.POST("/deploy", agentHandler.DeployAgent)    // 部署Agent
+			agents.POST("/uninstall", agentHandler.UninstallAgent) // 卸载Agent
 		}
 		
 		// 过滤器管理路由（黑名单/白名单）
 		handlers.SetupFilterRoutes(v1)
+		
+		// 多路复用配置路由
+		multiplex := v1.Group("/multiplex")
+		{
+			multiplex.POST("/config", multiplexHandler.UpdateMultiplexConfig)           // 更新多路复用配置
+			multiplex.GET("/config/:agent_id", multiplexHandler.GetMultiplexConfig)     // 获取多路复用配置
+			multiplex.GET("/status", multiplexHandler.GetMultiplexStatus)               // 获取多路复用状态统计
+			multiplex.POST("/batch", multiplexHandler.BatchUpdateMultiplexConfig)       // 批量更新多路复用配置
+		}
 		
 		// TODO: 配置管理路由
 		// configs := v1.Group("/configs")

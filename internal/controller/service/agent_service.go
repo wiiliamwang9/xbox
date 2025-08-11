@@ -63,6 +63,15 @@ func (s *agentService) RegisterAgent(req *pb.RegisterRequest) (*pb.RegisterRespo
 		existingAgent.Version = req.Version
 		existingAgent.Status = "online"
 		
+		// 更新IP段信息
+		if req.IpRangeInfo != nil {
+			existingAgent.IPRange = req.IpRangeInfo.IpRange
+			existingAgent.Country = req.IpRangeInfo.Country
+			existingAgent.Region = req.IpRangeInfo.Region
+			existingAgent.City = req.IpRangeInfo.City
+			existingAgent.ISP = req.IpRangeInfo.Isp
+		}
+		
 		// 更新元数据
 		if req.Metadata != nil {
 			metadata := make(models.JSON)
@@ -96,6 +105,15 @@ func (s *agentService) RegisterAgent(req *pb.RegisterRequest) (*pb.RegisterRespo
 		IPAddress: req.IpAddress,
 		Version:   req.Version,
 		Status:    "online",
+	}
+	
+	// 设置IP段信息
+	if req.IpRangeInfo != nil {
+		agent.IPRange = req.IpRangeInfo.IpRange
+		agent.Country = req.IpRangeInfo.Country
+		agent.Region = req.IpRangeInfo.Region
+		agent.City = req.IpRangeInfo.City
+		agent.ISP = req.IpRangeInfo.Isp
 	}
 	
 	// 设置元数据
@@ -134,12 +152,28 @@ func (s *agentService) ProcessHeartbeat(req *pb.HeartbeatRequest) (*pb.Heartbeat
 	}
 
 	// 检查Agent是否存在
-	_, err := s.agentRepo.GetByID(req.AgentId)
+	agent, err := s.agentRepo.GetByID(req.AgentId)
 	if err != nil {
 		return &pb.HeartbeatResponse{
 			Success: false,
 			Message: "Agent不存在，请重新注册",
 		}, nil
+	}
+
+	// 如果心跳包含IP段信息更新，先更新Agent信息
+	if req.IpRangeInfo != nil {
+		agent.IPRange = req.IpRangeInfo.IpRange
+		agent.Country = req.IpRangeInfo.Country
+		agent.Region = req.IpRangeInfo.Region
+		agent.City = req.IpRangeInfo.City
+		agent.ISP = req.IpRangeInfo.Isp
+		
+		if err := s.agentRepo.Update(agent); err != nil {
+			return &pb.HeartbeatResponse{
+				Success: false,
+				Message: fmt.Sprintf("更新IP段信息失败: %v", err),
+			}, nil
+		}
 	}
 
 	// 更新心跳时间和状态
@@ -152,7 +186,19 @@ func (s *agentService) ProcessHeartbeat(req *pb.HeartbeatRequest) (*pb.Heartbeat
 
 	// 如果有指标数据，可以在这里处理
 	if req.Metrics != nil {
-		// TODO: 处理监控指标数据
+		// 检查是否为卸载状态上报
+		if req.Status == "uninstalling" {
+			// 处理卸载状态上报
+			log.Printf("收到Agent卸载状态上报: AgentID=%s", req.AgentId)
+			for key, value := range req.Metrics {
+				log.Printf("  %s: %s", key, value)
+			}
+			
+			// TODO: 这里需要调用UninstallService.ProcessUninstallReport()
+			// 暂时先记录日志，完整实现需要在server层注入UninstallService
+		}
+		
+		// TODO: 处理其他监控指标数据
 		// s.processMetrics(req.AgentId, req.Metrics)
 	}
 

@@ -42,6 +42,14 @@
   "route": {
     "rules": [
       {
+        "domain_suffix": [".coingecko.com"],
+        "outbound": "block"
+      },
+      {
+        "ip_cidr": ["104.18.4.118/32", "104.18.5.118/32"],
+        "outbound": "block"
+      },
+      {
         "domain": ["example.com"],
         "outbound": "direct"
       }

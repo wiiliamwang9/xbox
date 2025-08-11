@@ -22,6 +22,12 @@ service AgentService {
     rpc GetFilterConfig(FilterConfigRequest) returns (FilterConfigResponse);
     // 回滚配置
     rpc RollbackConfig(RollbackRequest) returns (RollbackResponse);
+    // 更新多路复用配置
+    rpc UpdateMultiplexConfig(MultiplexConfigRequest) returns (MultiplexConfigResponse);
+    // 获取多路复用配置
+    rpc GetMultiplexConfig(MultiplexStatusRequest) returns (MultiplexStatusResponse);
+    // 卸载Agent
+    rpc UninstallAgent(UninstallRequest) returns (UninstallResponse);
 }
 
 // 注册请求
@@ -31,6 +37,7 @@ message RegisterRequest {
     string ip_address = 3;
     string version = 4;
     map<string, string> metadata = 5;
+    IPRangeInfo ip_range_info = 6; // IP段信息
 }
 
 // 注册响应
@@ -45,6 +52,7 @@ message HeartbeatRequest {
     string agent_id = 1;
     string status = 2;
     map<string, string> metrics = 3;
+    IPRangeInfo ip_range_info = 4; // IP段信息（可选，仅在变化时发送）
 }
 
 // 心跳响应
@@ -182,4 +190,77 @@ message RollbackResponse {
     string message = 2;
     string rolled_back_version = 3;
     string current_version = 4;
+}
+
+// 多路复用配置请求
+message MultiplexConfigRequest {
+    string agent_id = 1;
+    string protocol = 2; // 协议类型：vmess, vless, trojan, shadowsocks
+    MultiplexConfig multiplex_config = 3;
+}
+
+// 多路复用配置响应
+message MultiplexConfigResponse {
+    bool success = 1;
+    string message = 2;
+    string config_version = 3;
+}
+
+// 多路复用状态请求
+message MultiplexStatusRequest {
+    string agent_id = 1;
+    string protocol = 2; // 如果为空，返回所有协议的配置
+}
+
+// 多路复用状态响应
+message MultiplexStatusResponse {
+    bool success = 1;
+    string message = 2;
+    repeated ProtocolMultiplex multiplex_configs = 3;
+}
+
+// 多路复用配置
+message MultiplexConfig {
+    bool enabled = 1;           // 是否启用多路复用
+    string protocol = 2;        // 多路复用协议，固定为"smux"
+    int32 max_connections = 3;  // 最大连接数
+    int32 min_streams = 4;      // 最小流数量
+    bool padding = 5;           // 是否启用填充
+    map<string, string> brutal = 6; // brutal配置（可选）
+}
+
+// 协议多路复用配置
+message ProtocolMultiplex {
+    string protocol = 1;               // 协议名称
+    MultiplexConfig multiplex_config = 2; // 多路复用配置
+    bool enabled = 3;                  // 该协议是否启用多路复用
+    string last_updated = 4;           // 最后更新时间
+}
+
+// IP段信息
+message IPRangeInfo {
+    string ip_range = 1;    // IP段，如 192.168.1.0/24 或 10.0.0.0/8
+    string country = 2;     // 国家
+    string region = 3;      // 地区/省份  
+    string city = 4;        // 城市
+    string isp = 5;         // 运营商
+    string detection_method = 6; // 检测方法 (auto/manual/api)
+    string detected_at = 7; // 检测时间
+}
+
+// Agent卸载请求
+message UninstallRequest {
+    string agent_id = 1;        // Agent ID
+    bool force_uninstall = 2;   // 是否强制卸载
+    string reason = 3;          // 卸载原因
+    int32 timeout_seconds = 4;  // 超时时间（秒）
+}
+
+// Agent卸载响应
+message UninstallResponse {
+    bool success = 1;            // 是否成功
+    string message = 2;          // 响应消息
+    string uninstall_status = 3; // 卸载状态: preparing, cleaning_singbox, reporting, completed, failed
+    repeated string cleaned_files = 4; // 已清理的文件列表
+    int64 cleanup_time = 5;      // 清理耗时（毫秒）
 }
