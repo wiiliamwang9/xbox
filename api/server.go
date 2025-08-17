@@ -19,14 +19,16 @@ type Server struct {
 	httpServer       *http.Server
 	agentService     service.AgentService
 	multiplexService service.MultiplexService
+	reportService    *service.NodeReportService
 }
 
 // NewServer 创建HTTP服务器实例
-func NewServer(cfg *config.Config, agentService service.AgentService, multiplexService service.MultiplexService) *Server {
+func NewServer(cfg *config.Config, agentService service.AgentService, multiplexService service.MultiplexService, reportService *service.NodeReportService) *Server {
 	return &Server{
 		config:           cfg,
 		agentService:     agentService,
 		multiplexService: multiplexService,
+		reportService:    reportService,
 	}
 }
 
@@ -44,7 +46,7 @@ func (s *Server) Start() error {
 	r.Use(corsMiddleware())
 	
 	// 设置路由
-	routes.SetupRoutes(r, s.agentService, s.multiplexService)
+	routes.SetupRoutes(r, s.agentService, s.multiplexService, s.reportService)
 	
 	// 创建HTTP服务器
 	s.httpServer = &http.Server{

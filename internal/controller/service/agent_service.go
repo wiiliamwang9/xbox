@@ -2,11 +2,12 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/xbox/sing-box-manager/internal/controller/repository"
 	"github.com/xbox/sing-box-manager/internal/models"
-	pb "github.com/xbox/sing-box-manager/proto"
+	pb "github.com/xbox/sing-box-manager/proto/agent"
 )
 
 // AgentService Agent业务逻辑接口
@@ -19,6 +20,24 @@ type AgentService interface {
 	GetAgentStatus(agentID string) (*pb.StatusResponse, error)
 	// 获取Agent列表
 	GetAgentList(limit, offset int) ([]*models.Agent, int64, error)
+	// 获取所有Agent（无分页）
+	GetAllAgents() ([]*models.Agent, error)
+	// 根据ID获取单个Agent
+	GetAgent(agentID string) (*models.Agent, error)
+	// 部署Agent到节点
+	DeployAgentToNode(nodeIP string, sshPort int, sshUser, sshPassword, controllerURL string, deploymentOptions map[string]string) (string, string, error)
+	// 卸载Agent
+	UninstallAgent(agentID string, forceRemove bool, reason string, timeoutMinutes int) (interface{}, error)
+	// 更新Agent配置
+	UpdateAgentConfig(agentID, configData, configType string, hotReload bool, comment string) (string, error)
+	// 获取Agent监控数据
+	GetAgentMonitoring(agentID string, durationMinutes int) (map[string]interface{}, error)
+	// 获取IP段信息
+	GetIPRanges(country, region, ipAddress string, enableGeolocation bool) ([]*models.Agent, error)
+	// 测试Agent功能
+	TestAgent(agentID, testType string, timeoutMinutes int) (map[string]interface{}, string, error)
+	// 获取协议信息
+	GetProtocolInfo(agentID string) ([]string, string, error)
 	// 获取在线Agent数量
 	GetOnlineAgentCount() (int64, error)
 	// 检查离线Agent
@@ -243,6 +262,69 @@ func (s *agentService) GetAgentStatus(agentID string) (*pb.StatusResponse, error
 // GetAgentList 获取Agent列表
 func (s *agentService) GetAgentList(limit, offset int) ([]*models.Agent, int64, error) {
 	return s.agentRepo.GetAll(limit, offset)
+}
+
+// GetAllAgents 获取所有Agent（无分页）
+func (s *agentService) GetAllAgents() ([]*models.Agent, error) {
+	return s.agentRepo.GetAllAgents()
+}
+
+// GetAgent 根据ID获取单个Agent
+func (s *agentService) GetAgent(agentID string) (*models.Agent, error) {
+	return s.agentRepo.GetByID(agentID)
+}
+
+// DeployAgentToNode 部署Agent到节点
+func (s *agentService) DeployAgentToNode(nodeIP string, sshPort int, sshUser, sshPassword, controllerURL string, deploymentOptions map[string]string) (string, string, error) {
+	// TODO: 实现Agent部署逻辑
+	return "", "部署功能待实现", fmt.Errorf("部署功能待实现")
+}
+
+// UninstallAgent 卸载Agent
+func (s *agentService) UninstallAgent(agentID string, forceRemove bool, reason string, timeoutMinutes int) (interface{}, error) {
+	// TODO: 实现Agent卸载逻辑
+	result := map[string]interface{}{
+		"Success":       false,
+		"Message":       "卸载功能待实现",
+		"Status":        "not_implemented",
+		"CleanedFiles":  []string{},
+		"CleanupTimeMs": 0,
+	}
+	return result, fmt.Errorf("卸载功能待实现")
+}
+
+// UpdateAgentConfig 更新Agent配置
+func (s *agentService) UpdateAgentConfig(agentID, configData, configType string, hotReload bool, comment string) (string, error) {
+	// TODO: 实现配置更新逻辑
+	return "配置更新功能待实现", fmt.Errorf("配置更新功能待实现")
+}
+
+// GetAgentMonitoring 获取Agent监控数据
+func (s *agentService) GetAgentMonitoring(agentID string, durationMinutes int) (map[string]interface{}, error) {
+	// TODO: 实现监控数据获取逻辑
+	return map[string]interface{}{
+		"message": "监控数据获取功能待实现",
+	}, fmt.Errorf("监控数据获取功能待实现")
+}
+
+// GetIPRanges 获取IP段信息
+func (s *agentService) GetIPRanges(country, region, ipAddress string, enableGeolocation bool) ([]*models.Agent, error) {
+	// TODO: 实现IP段查询逻辑
+	return []*models.Agent{}, fmt.Errorf("IP段查询功能待实现")
+}
+
+// TestAgent 测试Agent功能
+func (s *agentService) TestAgent(agentID, testType string, timeoutMinutes int) (map[string]interface{}, string, error) {
+	// TODO: 实现Agent测试逻辑
+	return map[string]interface{}{
+		"message": "Agent测试功能待实现",
+	}, "unknown", fmt.Errorf("Agent测试功能待实现")
+}
+
+// GetProtocolInfo 获取协议信息
+func (s *agentService) GetProtocolInfo(agentID string) ([]string, string, error) {
+	// TODO: 实现协议信息获取逻辑
+	return []string{}, "协议信息获取功能待实现", fmt.Errorf("协议信息获取功能待实现")
 }
 
 // GetOnlineAgentCount 获取在线Agent数量

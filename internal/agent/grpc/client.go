@@ -2,8 +2,11 @@ package grpc
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -14,8 +17,9 @@ import (
 	"github.com/xbox/sing-box-manager/internal/agent/singbox"
 	"github.com/xbox/sing-box-manager/internal/agent/uninstall"
 	"github.com/xbox/sing-box-manager/internal/config"
-	pb "github.com/xbox/sing-box-manager/proto"
+	pb "github.com/xbox/sing-box-manager/proto/agent"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
@@ -76,11 +80,31 @@ func NewClient(cfg *config.Config) *Client {
 func (c *Client) Connect() error {
 	var err error
 	
+	// 创建连接选项
+	var opts []grpc.DialOption
+	
+	// 根据配置选择安全传输方式
+	if c.config.GRPC.TLS.Enabled {
+		log.Println("启用TLS + mTLS双向认证连接...")
+		
+		// 加载TLS凭据
+		creds, err := c.loadTLSCredentials()
+		if err != nil {
+			return fmt.Errorf("加载TLS凭据失败: %v", err)
+		}
+		
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+		log.Printf("TLS + mTLS客户端配置成功，CA证书: %s", c.config.GRPC.TLS.CAFile)
+	} else {
+		log.Println("使用非安全连接...")
+		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	}
+	
+	// 添加其他选项
+	opts = append(opts, grpc.WithTimeout(10*time.Second))
+	
 	// 创建gRPC连接
-	c.conn, err = grpc.Dial(c.config.Agent.ControllerAddr, 
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithTimeout(10*time.Second),
-	)
+	c.conn, err = grpc.Dial(c.config.Agent.ControllerAddr, opts...)
 	if err != nil {
 		return fmt.Errorf("连接Controller失败: %v", err)
 	}
@@ -777,5 +801,50 @@ func (c *Client) reportUninstallResult(result *pb.UninstallResponse) error {
 	
 	log.Printf("卸载结果已成功上报到Controller")
 	return nil
+}
+
+// loadTLSCredentials 加载TLS + mTLS凭据
+func (c *Client) loadTLSCredentials() (credentials.TransportCredentials, error) {
+	// 读取客户端证书和私钥
+	clientCert, err := tls.LoadX509KeyPair(c.config.GRPC.TLS.CertFile, c.config.GRPC.TLS.KeyFile)
+	if err != nil {
+		return nil, fmt.Errorf("加载客户端证书失败: %v", err)
+	}
+
+	// 读取CA证书
+	caCert, err := ioutil.ReadFile(c.config.GRPC.TLS.CAFile)
+	if err != nil {
+		return nil, fmt.Errorf("读取CA证书失败: %v", err)
+	}
+
+	// 创建CA证书池
+	caCertPool := x509.NewCertPool()
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		return nil, fmt.Errorf("解析CA证书失败")
+	}
+
+	// 配置TLS
+	tlsConfig := &tls.Config{
+		Certificates: []tls.Certificate{clientCert}, // 客户端证书
+		RootCAs:      caCertPool,                    // 验证服务器证书的CA
+		ServerName:   c.config.GRPC.TLS.ServerName,  // 服务器名称验证
+		MinVersion:   tls.VersionTLS12,              // 最低TLS版本
+		MaxVersion:   tls.VersionTLS13,              // 最高TLS版本
+		CipherSuites: []uint16{
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+		},
+	}
+
+	log.Printf("客户端TLS配置详情:")
+	log.Printf("  客户端证书: %s", c.config.GRPC.TLS.CertFile)
+	log.Printf("  客户端私钥: %s", c.config.GRPC.TLS.KeyFile)
+	log.Printf("  CA证书: %s", c.config.GRPC.TLS.CAFile)
+	log.Printf("  服务器名称: %s", c.config.GRPC.TLS.ServerName)
+	log.Printf("  TLS版本: 1.2-1.3")
+
+	return credentials.NewTLS(tlsConfig), nil
 }
 

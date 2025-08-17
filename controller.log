@@ -1,55 +1,57 @@
-2025/08/10 23:47:54 Xbox Controller 0.1.0 启动中...
-2025/08/10 23:47:54 数据库连接成功
-2025/08/10 23:47:54 Controller服务已启动
-2025/08/10 23:47:54 gRPC地址: 0.0.0.0:9090
-2025/08/10 23:47:54 HTTP地址: 0.0.0.0:9000
-2025/08/10 23:47:54 过滤器管理路由已注册 (Gin版本)
-2025/08/10 23:47:54 gRPC服务器启动成功，监听地址: 0.0.0.0:9090
-2025/08/10 23:47:54 HTTP API服务器启动成功，监听地址: 0.0.0.0:9000
-[GIN] 2025/08/10 - 23:48:04 | 200 |      70.101µs |       127.0.0.1 | GET      "/health"
+Generating protobuf code...
+生成gRPC Go代码...
+gRPC代码生成完成！
+Building applications...
+Starting controller...
+2025/08/16 02:53:45 Xbox Controller 0.1.0 启动中...
+2025/08/16 02:53:45 数据库连接成功
+2025/08/16 02:53:45 节点上报服务已启动，间隔: 60秒
+2025/08/16 02:53:45 Controller服务已启动
+2025/08/16 02:53:45 gRPC地址: 0.0.0.0:9090
+2025/08/16 02:53:45 HTTP地址: 0.0.0.0:9000
+2025/08/16 02:53:45 gRPC服务器启动失败: 创建gRPC监听器失败: listen tcp 0.0.0.0:9090: bind: address already in use
+make: *** [Makefile:39: run-controller] Error 1
+[GIN] 2025/08/16 - 02:53:55 | 200 |        68.2µs |       127.0.0.1 | GET      "/health"
+[GIN] 2025/08/16 - 02:54:06 | 500 |  3.869413796s |       127.0.0.1 | POST     "/api/v1/agents/deploy"
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T02:54:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T02:54:37-04:00"}
+[GIN] 2025/08/16 - 02:55:14 | 500 |  6.825003658s |       127.0.0.1 | POST     "/api/v1/agents/deploy"
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T02:55:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T02:55:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T02:56:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T02:56:37-04:00"}
+2025/08/16 02:56:53 Agent注册请求: ID=debian-1755327413, Hostname=debian, IP=195.78.55.64
 
-2025/08/10 23:48:10 [31;1m/root/wl/code/xbox/internal/controller/service/multiplex.go:246 [35;1mError 1146 (42S02): Table 'xbox_manager.multiplex_configs' doesn't exist
-[0m[33m[0.336ms] [34;1m[rows:0][0m SELECT count(*) FROM `multiplex_configs`
-
-2025/08/10 23:48:10 [31;1m/root/wl/code/xbox/internal/controller/service/multiplex.go:247 [35;1mError 1146 (42S02): Table 'xbox_manager.multiplex_configs' doesn't exist
-[0m[33m[0.549ms] [34;1m[rows:0][0m SELECT count(*) FROM `multiplex_configs` WHERE enabled = true
-
-2025/08/10 23:48:10 [31;1m/root/wl/code/xbox/internal/controller/service/multiplex.go:248 [35;1mError 1146 (42S02): Table 'xbox_manager.multiplex_configs' doesn't exist
-[0m[33m[0.459ms] [34;1m[rows:0][0m SELECT count(*) FROM `multiplex_configs` WHERE status = 'active'
-
-2025/08/10 23:48:10 [31;1m/root/wl/code/xbox/internal/controller/service/multiplex.go:267 [35;1mError 1146 (42S02): Table 'xbox_manager.multiplex_configs' doesn't exist
-[0m[33m[1.875ms] [34;1m[rows:-][0m 
-		SELECT 
-			protocol,
-			COUNT(*) as total,
-			SUM(CASE WHEN enabled = 1 THEN 1 ELSE 0 END) as enabled,
-			SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active
-		FROM multiplex_configs 
-		GROUP BY protocol
-	
-[GIN] 2025/08/10 - 23:48:10 | 200 |    7.717068ms |       127.0.0.1 | GET      "/api/v1/multiplex/status"
-2025/08/10 23:48:17 收到心跳: AgentID=debian-1754880857, Status=online
-2025/08/10 23:48:23 收到心跳: AgentID=debian-1753875293, Status=online
-2025/08/10 23:48:47 收到心跳: AgentID=debian-1754880857, Status=online
-2025/08/10 23:48:53 收到心跳: AgentID=debian-1753875293, Status=online
-2025/08/10 23:49:17 收到心跳: AgentID=debian-1754880857, Status=online
-2025/08/10 23:49:23 收到心跳: AgentID=debian-1753875293, Status=online
-2025/08/10 23:49:47 收到心跳: AgentID=debian-1754880857, Status=online
-2025/08/10 23:49:53 收到心跳: AgentID=debian-1753875293, Status=online
-[GIN] 2025/08/10 - 23:50:07 | 200 |    6.306557ms |       127.0.0.1 | GET      "/api/v1/multiplex/status"
-2025/08/10 23:50:17 收到心跳: AgentID=debian-1754880857, Status=online
-
-2025/08/10 23:50:19 [31;1m/root/wl/code/xbox/internal/controller/service/multiplex.go:76 [35;1mrecord not found
-[0m[33m[0.530ms] [34;1m[rows:0][0m SELECT * FROM `multiplex_configs` WHERE agent_id = 'debian-1754880857' AND protocol = 'vmess' ORDER BY `multiplex_configs`.`id` LIMIT 1
-
-2025/08/10 23:50:19 [31;1m/root/wl/code/xbox/internal/controller/service/multiplex.go:92 [35;1mError 1054 (42S22): Unknown column 'multiplex_proto' in 'INSERT INTO'
-[0m[33m[0.619ms] [34;1m[rows:0][0m INSERT INTO `multiplex_configs` (`agent_id`,`protocol`,`enabled`,`multiplex_proto`,`max_connections`,`min_streams`,`padding`,`brutal_config`,`status`,`error_message`,`config_version`,`created_at`,`updated_at`) VALUES ('debian-1754880857','vmess',true,'smux',8,4,false,'{"down":"200 Mbps","up":"100 Mbps"}','inactive','','v1754884219','2025-08-10 23:50:19.485','2025-08-10 23:50:19.485') RETURNING `id`
-[GIN] 2025/08/10 - 23:50:19 | 500 |    3.168329ms |       127.0.0.1 | POST     "/api/v1/multiplex/config"
-2025/08/10 23:50:23 收到心跳: AgentID=debian-1753875293, Status=online
-2025/08/10 23:50:47 收到心跳: AgentID=debian-1754880857, Status=online
-2025/08/10 23:50:53 收到心跳: AgentID=debian-1753875293, Status=online
-2025/08/10 23:50:56 正在关闭服务...
-2025/08/10 23:50:56 正在停止gRPC服务器...
-2025/08/10 23:50:56 gRPC服务器已停止
-2025/08/10 23:50:56 正在停止HTTP服务器...
-2025/08/10 23:50:56 HTTP服务器启动失败: http: Server closed
+2025/08/16 02:56:53 [31;1m/root/wl/code/xbox/internal/controller/repository/agent_repo.go:54 [35;1mrecord not found
+[0m[33m[1.061ms] [34;1m[rows:0][0m SELECT * FROM `agents` WHERE id = 'debian-1755327413' AND `agents`.`deleted_at` IS NULL ORDER BY `agents`.`id` LIMIT 1
+2025/08/16 02:56:53 Agent注册响应: Success=true, Message=Agent注册成功
+[GIN] 2025/08/16 - 02:57:19 | 200 |     108.101µs |       127.0.0.1 | GET      "/health"
+[GIN] 2025/08/16 - 02:57:20 | 200 |     3.11203ms |       127.0.0.1 | GET      "/api/v1/agents"
+2025/08/16 02:57:23 收到心跳: AgentID=debian-1755327413, Status=online
+[GIN] 2025/08/16 - 02:57:23 | 200 |    2.642526ms |       127.0.0.1 | GET      "/api/v1/agents"
+[GIN] 2025/08/16 - 02:57:23 | 200 |    1.296112ms |       127.0.0.1 | GET      "/api/v1/agents/debian-1755327413"
+[GIN] 2025/08/16 - 02:57:26 | 500 |  2.238787197s |       127.0.0.1 | POST     "/api/v1/agents/deploy"
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T02:57:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v服务器返回错误状态: 400","timestamp":"2025-08-16T02:57:37-04:00"}
+2025/08/16 02:57:53 收到心跳: AgentID=debian-1755327413, Status=online
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T02:58:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T02:58:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T02:59:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T02:59:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T03:00:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T03:00:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T03:01:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T03:01:37-04:00"}
+[GIN] 2025/08/16 - 03:01:49 | 200 |     109.101µs |       127.0.0.1 | GET      "/health"
+[GIN] 2025/08/16 - 03:01:49 | 200 |    1.747417ms |       127.0.0.1 | GET      "/api/v1/agents"
+[GIN] 2025/08/16 - 03:01:52 | 200 |    1.517215ms |       127.0.0.1 | GET      "/api/v1/agents"
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T03:02:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T03:02:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-16T03:03:37-04:00"}
+{"file":"/root/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v发送HTTP请求失败: Post \"http://localhost:8080/api/ip-pool/report\": dial tcp [::1]:8080: connect: connection refused","timestamp":"2025-08-16T03:03:37-04:00"}
+2025/08/16 03:04:23 正在关闭服务...
+2025/08/16 03:04:23 正在停止gRPC服务器...
+2025/08/16 03:04:23 gRPC服务器已停止
+2025/08/16 03:04:23 正在停止HTTP服务器...
+2025/08/16 03:04:23 HTTP服务器启动失败: http: Server closed
+make: *** [Makefile:39: run-controller] Error 1

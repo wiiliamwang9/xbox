@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"os/exec"
 	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/xbox/sing-box-manager/internal/controller/service"

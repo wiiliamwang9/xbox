@@ -30,6 +30,7 @@ const (
 	AgentService_RollbackConfig_FullMethodName        = "/agent.AgentService/RollbackConfig"
 	AgentService_UpdateMultiplexConfig_FullMethodName = "/agent.AgentService/UpdateMultiplexConfig"
 	AgentService_GetMultiplexConfig_FullMethodName    = "/agent.AgentService/GetMultiplexConfig"
+	AgentService_UninstallAgent_FullMethodName        = "/agent.AgentService/UninstallAgent"
 )
 
 // AgentServiceClient is the client API for AgentService service.
@@ -60,6 +61,8 @@ type AgentServiceClient interface {
 	UpdateMultiplexConfig(ctx context.Context, in *MultiplexConfigRequest, opts ...grpc.CallOption) (*MultiplexConfigResponse, error)
 	// 获取多路复用配置
 	GetMultiplexConfig(ctx context.Context, in *MultiplexStatusRequest, opts ...grpc.CallOption) (*MultiplexStatusResponse, error)
+	// 卸载Agent
+	UninstallAgent(ctx context.Context, in *UninstallRequest, opts ...grpc.CallOption) (*UninstallResponse, error)
 }
 
 type agentServiceClient struct {
@@ -180,6 +183,16 @@ func (c *agentServiceClient) GetMultiplexConfig(ctx context.Context, in *Multipl
 	return out, nil
 }
 
+func (c *agentServiceClient) UninstallAgent(ctx context.Context, in *UninstallRequest, opts ...grpc.CallOption) (*UninstallResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UninstallResponse)
+	err := c.cc.Invoke(ctx, AgentService_UninstallAgent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServiceServer is the server API for AgentService service.
 // All implementations must embed UnimplementedAgentServiceServer
 // for forward compatibility.
@@ -208,6 +221,8 @@ type AgentServiceServer interface {
 	UpdateMultiplexConfig(context.Context, *MultiplexConfigRequest) (*MultiplexConfigResponse, error)
 	// 获取多路复用配置
 	GetMultiplexConfig(context.Context, *MultiplexStatusRequest) (*MultiplexStatusResponse, error)
+	// 卸载Agent
+	UninstallAgent(context.Context, *UninstallRequest) (*UninstallResponse, error)
 	mustEmbedUnimplementedAgentServiceServer()
 }
 
@@ -250,6 +265,9 @@ func (UnimplementedAgentServiceServer) UpdateMultiplexConfig(context.Context, *M
 }
 func (UnimplementedAgentServiceServer) GetMultiplexConfig(context.Context, *MultiplexStatusRequest) (*MultiplexStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMultiplexConfig not implemented")
+}
+func (UnimplementedAgentServiceServer) UninstallAgent(context.Context, *UninstallRequest) (*UninstallResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UninstallAgent not implemented")
 }
 func (UnimplementedAgentServiceServer) mustEmbedUnimplementedAgentServiceServer() {}
 func (UnimplementedAgentServiceServer) testEmbeddedByValue()                      {}
@@ -470,6 +488,24 @@ func _AgentService_GetMultiplexConfig_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AgentService_UninstallAgent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UninstallRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServiceServer).UninstallAgent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AgentService_UninstallAgent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServiceServer).UninstallAgent(ctx, req.(*UninstallRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AgentService_ServiceDesc is the grpc.ServiceDesc for AgentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -520,6 +556,10 @@ var AgentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMultiplexConfig",
 			Handler:    _AgentService_GetMultiplexConfig_Handler,
+		},
+		{
+			MethodName: "UninstallAgent",
+			Handler:    _AgentService_UninstallAgent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

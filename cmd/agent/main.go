@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	configFile   = flag.String("config", "configs/config.yaml", "配置文件路径")
+	configFile   = flag.String("config", "configs/agent.yaml", "配置文件路径")
 	showVersion  = flag.Bool("version", false, "显示版本号")
 	showHelp     = flag.Bool("help", false, "显示帮助信息")
 )

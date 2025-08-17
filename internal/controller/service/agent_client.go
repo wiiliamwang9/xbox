@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	pb "github.com/xbox/sing-box-manager/proto"
+	pb "github.com/xbox/sing-box-manager/proto/agent"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

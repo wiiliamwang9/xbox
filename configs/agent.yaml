@@ -18,7 +18,11 @@ grpc:
   host: "0.0.0.0" 
   port: 9091
   tls:
-    enabled: false
+    enabled: true                              # 启用TLS + mTLS双向认证
+    cert_file: "/root/wl/code/certs/client-cert.pem"  # Agent客户端证书
+    key_file: "/root/wl/code/certs/client-key.pem"    # Agent客户端私钥
+    ca_file: "/root/wl/code/certs/ca-cert.pem"           # CA根证书（验证服务器）
+    server_name: "xbox-controller"              # 服务器名称验证
 
 log:
   level: "info"

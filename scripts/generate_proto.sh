@@ -21,12 +21,20 @@ if ! command -v protoc-gen-go-grpc &> /dev/null; then
 fi
 
 # 创建输出目录
-mkdir -p proto/agent
+mkdir -p proto/agent proto/backend proto/envoy
 
 # 生成Go代码
 echo "生成gRPC Go代码..."
 protoc --go_out=. --go_opt=paths=source_relative \
        --go-grpc_out=. --go-grpc_opt=paths=source_relative \
        proto/agent.proto
+
+protoc --go_out=. --go_opt=paths=source_relative \
+       --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+       proto/backend.proto
+
+protoc --go_out=. --go_opt=paths=source_relative \
+       --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+       proto/envoy.proto
 
 echo "gRPC代码生成完成！"

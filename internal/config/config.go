@@ -15,6 +15,7 @@ type Config struct {
 	GRPC     GRPCConfig     `mapstructure:"grpc"`
 	Log      LogConfig      `mapstructure:"log"`
 	Agent    AgentConfig    `mapstructure:"agent"`
+	Report   ReportConfig   `mapstructure:"report"`
 }
 
 // ServerConfig HTTP服务器配置
@@ -38,13 +39,18 @@ type DatabaseConfig struct {
 
 // GRPCConfig gRPC服务配置
 type GRPCConfig struct {
-	Host string `mapstructure:"host"`
-	Port int    `mapstructure:"port"`
-	TLS  struct {
-		Enabled  bool   `mapstructure:"enabled"`
-		CertFile string `mapstructure:"cert_file"`
-		KeyFile  string `mapstructure:"key_file"`
-	} `mapstructure:"tls"`
+	Host string    `mapstructure:"host"`
+	Port int       `mapstructure:"port"`
+	TLS  TLSConfig `mapstructure:"tls"`
+}
+
+// TLSConfig TLS配置
+type TLSConfig struct {
+	Enabled    bool   `mapstructure:"enabled"`     // 启用TLS
+	CertFile   string `mapstructure:"cert_file"`   // 证书文件路径
+	KeyFile    string `mapstructure:"key_file"`    // 私钥文件路径
+	CAFile     string `mapstructure:"ca_file"`     // CA证书文件路径
+	ServerName string `mapstructure:"server_name"` // 服务器名称（客户端用于验证）
 }
 
 // LogConfig 日志配置
@@ -65,6 +71,16 @@ type AgentConfig struct {
 	HeartbeatInterval int   `mapstructure:"heartbeat_interval"` // 秒
 	SingBoxConfig    string `mapstructure:"singbox_config"`
 	SingBoxBinary    string `mapstructure:"singbox_binary"`
+}
+
+// ReportConfig 节点上报配置
+type ReportConfig struct {
+	Enabled      bool   `mapstructure:"enabled"`          // 是否启用定时上报
+	BackendURL   string `mapstructure:"backend_url"`      // 后端服务地址
+	Interval     int    `mapstructure:"interval"`         // 上报间隔（秒）
+	Timeout      int    `mapstructure:"timeout"`          // 请求超时（秒）
+	RetryCount   int    `mapstructure:"retry_count"`      // 重试次数
+	RetryDelay   int    `mapstructure:"retry_delay"`      // 重试延迟（秒）
 }
 
 var globalConfig *Config
@@ -150,6 +166,14 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("agent.controller_addr", "localhost:9090")
 	v.SetDefault("agent.singbox_config", "./sing-box.json")
 	v.SetDefault("agent.singbox_binary", "sing-box")
+	
+	// Report默认配置
+	v.SetDefault("report.enabled", true)
+	v.SetDefault("report.backend_url", "http://localhost:8080")
+	v.SetDefault("report.interval", 60)  // 60秒，即每分钟上报一次
+	v.SetDefault("report.timeout", 30)
+	v.SetDefault("report.retry_count", 3)
+	v.SetDefault("report.retry_delay", 5)
 }
 
 // GetDSN 获取数据库连接字符串

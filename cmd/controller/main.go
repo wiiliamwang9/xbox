@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/xbox/sing-box-manager/api"
 	"github.com/xbox/sing-box-manager/internal/config"
@@ -15,6 +17,7 @@ import (
 	"github.com/xbox/sing-box-manager/internal/controller/repository"
 	"github.com/xbox/sing-box-manager/internal/controller/service"
 	"github.com/xbox/sing-box-manager/internal/database"
+	"github.com/xbox/sing-box-manager/pkg/logger"
 )
 
 var (
@@ -59,6 +62,19 @@ func main() {
 	
 	log.Println("数据库连接成功")
 	
+	// 初始化日志器
+	loggerConfig := &logger.Config{
+		Level:      cfg.Log.Level,
+		Format:     cfg.Log.Format,
+		Output:     cfg.Log.Output,
+		File:       cfg.GetLogFile(),
+		MaxSize:    cfg.Log.MaxSize,
+		MaxBackups: cfg.Log.MaxBackups,
+		MaxAge:     cfg.Log.MaxAge,
+		Compress:   true,
+	}
+	appLogger, _ := logger.NewLogger(loggerConfig)
+	
 	// 初始化依赖
 	db := database.GetDB()
 	agentRepo := repository.NewAgentRepository(db)
@@ -68,9 +84,15 @@ func main() {
 	agentClient := service.NewAgentClient()
 	multiplexService := service.NewMultiplexService(db, agentClient)
 	
+	// 创建节点上报服务
+	var reportService *service.NodeReportService
+	if cfg.Report.Enabled {
+		reportService = service.NewNodeReportService(db, agentRepo, cfg.Report.BackendURL, *appLogger)
+	}
+	
 	// 创建服务器
-	grpcServer := grpc.NewServer(cfg, agentService)
-	httpServer := api.NewServer(cfg, agentService, multiplexService)
+	grpcServer := grpc.NewServer(cfg, agentService, multiplexService, reportService)
+	httpServer := api.NewServer(cfg, agentService, multiplexService, reportService)
 	
 	// 使用WaitGroup等待所有服务启动
 	var wg sync.WaitGroup
@@ -92,6 +114,25 @@ func main() {
 			log.Fatalf("HTTP服务器启动失败: %v", err)
 		}
 	}()
+	
+	// 启动节点上报服务
+	if reportService != nil {
+		ctx, cancelReport := context.WithCancel(context.Background())
+		go func() {
+			reportInterval := time.Duration(cfg.Report.Interval) * time.Second
+			reportService.StartReporting(ctx, reportInterval)
+		}()
+		
+		// 延迟关闭报告服务
+		defer func() {
+			cancelReport()
+			if reportService != nil {
+				reportService.StopReporting()
+			}
+		}()
+		
+		log.Printf("节点上报服务已启动，间隔: %d秒", cfg.Report.Interval)
+	}
 	
 	log.Printf("Controller服务已启动")
 	log.Printf("gRPC地址: %s", cfg.GetGRPCAddr())

@@ -1,0 +1,274 @@
+syntax = "proto3";
+package envoy;
+option go_package = "github.com/xbox/sing-box-manager/proto/envoy";
+
+import "google/protobuf/timestamp.proto";
+
+// Envoy代理服务接口
+service EnvoyService {
+    // 服务发现和负载均衡
+    rpc RegisterBackend(RegisterBackendRequest) returns (RegisterBackendResponse);
+    rpc UnregisterBackend(UnregisterBackendRequest) returns (UnregisterBackendResponse);
+    rpc GetBackendHealth(GetBackendHealthRequest) returns (GetBackendHealthResponse);
+    
+    // TLS配置管理
+    rpc UpdateTLSCertificate(UpdateTLSCertificateRequest) returns (UpdateTLSCertificateResponse);
+    rpc GetTLSStatus(GetTLSStatusRequest) returns (GetTLSStatusResponse);
+    
+    // 负载均衡配置
+    rpc UpdateLoadBalancerConfig(UpdateLoadBalancerConfigRequest) returns (UpdateLoadBalancerConfigResponse);
+    rpc GetLoadBalancerStats(GetLoadBalancerStatsRequest) returns (GetLoadBalancerStatsResponse);
+    
+    // 路由配置
+    rpc UpdateRouteConfig(UpdateRouteConfigRequest) returns (UpdateRouteConfigResponse);
+    rpc GetRouteConfig(GetRouteConfigRequest) returns (GetRouteConfigResponse);
+}
+
+// 注册后端服务请求
+message RegisterBackendRequest {
+    string service_name = 1;        // xbox-controller, saas-backend
+    string endpoint = 2;            // IP:Port
+    int32 weight = 3;               // 负载均衡权重
+    map<string, string> metadata = 4;
+    HealthCheckConfig health_check = 5;
+}
+
+// 健康检查配置
+message HealthCheckConfig {
+    string path = 1;                // 健康检查路径，如 /health
+    int32 interval_seconds = 2;     // 检查间隔
+    int32 timeout_seconds = 3;      // 超时时间
+    int32 healthy_threshold = 4;    // 健康阈值
+    int32 unhealthy_threshold = 5;  // 不健康阈值
+}
+
+// 注册后端服务响应
+message RegisterBackendResponse {
+    bool success = 1;
+    string message = 2;
+    string backend_id = 3;
+}
+
+// 注销后端服务请求
+message UnregisterBackendRequest {
+    string service_name = 1;
+    string endpoint = 2;
+}
+
+// 注销后端服务响应
+message UnregisterBackendResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+// 获取后端健康状态请求
+message GetBackendHealthRequest {
+    string service_name = 1;
+}
+
+// 后端实例状态
+message BackendInstanceStatus {
+    string endpoint = 1;
+    bool healthy = 2;
+    string status = 3;              // healthy, unhealthy, draining
+    int32 weight = 4;
+    google.protobuf.Timestamp last_check = 5;
+    int32 consecutive_failures = 6;
+    double response_time_ms = 7;
+}
+
+// 获取后端健康状态响应
+message GetBackendHealthResponse {
+    bool success = 1;
+    string message = 2;
+    repeated BackendInstanceStatus backends = 3;
+    int32 healthy_count = 4;
+    int32 total_count = 5;
+}
+
+// 更新TLS证书请求
+message UpdateTLSCertificateRequest {
+    string service_name = 1;
+    string certificate_chain = 2;   // PEM格式证书链
+    string private_key = 3;         // PEM格式私钥
+    repeated string san_domains = 4; // Subject Alternative Names
+    google.protobuf.Timestamp expires_at = 5;
+    bool auto_reload = 6;           // 是否自动重载
+}
+
+// 更新TLS证书响应
+message UpdateTLSCertificateResponse {
+    bool success = 1;
+    string message = 2;
+    string certificate_id = 3;
+    google.protobuf.Timestamp updated_at = 4;
+}
+
+// 获取TLS状态请求
+message GetTLSStatusRequest {
+    string service_name = 1;
+}
+
+// TLS证书状态
+message TLSCertificateStatus {
+    string certificate_id = 1;
+    string service_name = 2;
+    repeated string domains = 3;
+    google.protobuf.Timestamp issued_at = 4;
+    google.protobuf.Timestamp expires_at = 5;
+    bool valid = 6;
+    string issuer = 7;
+    string fingerprint = 8;
+    int32 days_until_expiry = 9;
+}
+
+// 获取TLS状态响应
+message GetTLSStatusResponse {
+    bool success = 1;
+    string message = 2;
+    repeated TLSCertificateStatus certificates = 3;
+    bool tls_enabled = 4;
+}
+
+// 更新负载均衡配置请求
+message UpdateLoadBalancerConfigRequest {
+    string service_name = 1;
+    LoadBalancerPolicy policy = 2;
+    CircuitBreakerConfig circuit_breaker = 3;
+    RetryConfig retry_config = 4;
+    TimeoutConfig timeout_config = 5;
+}
+
+// 负载均衡策略
+enum LoadBalancerPolicy {
+    ROUND_ROBIN = 0;
+    LEAST_CONNECTIONS = 1;
+    WEIGHTED_ROUND_ROBIN = 2;
+    RANDOM = 3;
+    CONSISTENT_HASH = 4;
+}
+
+// 熔断器配置
+message CircuitBreakerConfig {
+    int32 max_connections = 1;
+    int32 max_pending_requests = 2;
+    int32 max_requests = 3;
+    int32 max_retries = 4;
+    int32 consecutive_5xx = 5;
+    int32 interval_seconds = 6;
+    int32 base_ejection_time_seconds = 7;
+}
+
+// 重试配置
+message RetryConfig {
+    int32 num_retries = 1;
+    repeated string retry_on = 2;    // 5xx, gateway-error, connect-failure, etc.
+    int32 per_try_timeout_seconds = 3;
+    double backoff_base_interval_seconds = 4;
+    double backoff_max_interval_seconds = 5;
+}
+
+// 超时配置
+message TimeoutConfig {
+    int32 request_timeout_seconds = 1;
+    int32 idle_timeout_seconds = 2;
+    int32 connect_timeout_seconds = 3;
+}
+
+// 更新负载均衡配置响应
+message UpdateLoadBalancerConfigResponse {
+    bool success = 1;
+    string message = 2;
+    google.protobuf.Timestamp updated_at = 3;
+}
+
+// 获取负载均衡统计请求
+message GetLoadBalancerStatsRequest {
+    string service_name = 1;
+    int32 duration_minutes = 2;     // 统计时间范围
+}
+
+// 负载均衡统计
+message LoadBalancerStats {
+    string service_name = 1;
+    int64 total_requests = 2;
+    int64 successful_requests = 3;
+    int64 failed_requests = 4;
+    double avg_response_time_ms = 5;
+    double p95_response_time_ms = 6;
+    double p99_response_time_ms = 7;
+    int32 active_connections = 8;
+    map<string, int64> backend_request_counts = 9;
+    map<string, double> backend_response_times = 10;
+    google.protobuf.Timestamp stats_period_start = 11;
+    google.protobuf.Timestamp stats_period_end = 12;
+}
+
+// 获取负载均衡统计响应
+message GetLoadBalancerStatsResponse {
+    bool success = 1;
+    string message = 2;
+    LoadBalancerStats stats = 3;
+}
+
+// 更新路由配置请求
+message UpdateRouteConfigRequest {
+    string service_name = 1;
+    repeated RouteRule routes = 2;
+    HeaderModificationConfig headers = 3;
+    CorsConfig cors = 4;
+}
+
+// 路由规则
+message RouteRule {
+    string path = 1;                // 路径匹配，支持前缀、精确、正则
+    string match_type = 2;          // prefix, exact, regex
+    string target_service = 3;      // 目标服务名
+    int32 priority = 4;             // 优先级
+    map<string, string> headers = 5; // 请求头匹配
+    repeated string methods = 6;     // HTTP方法
+    TimeoutConfig timeout = 7;
+    RetryConfig retry = 8;
+}
+
+// 请求头修改配置
+message HeaderModificationConfig {
+    map<string, string> add_headers = 1;      // 添加请求头
+    repeated string remove_headers = 2;       // 删除请求头
+    map<string, string> set_headers = 3;      // 设置请求头
+    map<string, string> response_headers = 4; // 响应头设置
+}
+
+// CORS配置
+message CorsConfig {
+    repeated string allowed_origins = 1;
+    repeated string allowed_methods = 2;
+    repeated string allowed_headers = 3;
+    repeated string exposed_headers = 4;
+    bool allow_credentials = 5;
+    int32 max_age_seconds = 6;
+}
+
+// 更新路由配置响应
+message UpdateRouteConfigResponse {
+    bool success = 1;
+    string message = 2;
+    string config_version = 3;
+    google.protobuf.Timestamp updated_at = 4;
+}
+
+// 获取路由配置请求
+message GetRouteConfigRequest {
+    string service_name = 1;
+}
+
+// 获取路由配置响应
+message GetRouteConfigResponse {
+    bool success = 1;
+    string message = 2;
+    repeated RouteRule routes = 3;
+    HeaderModificationConfig headers = 4;
+    CorsConfig cors = 5;
+    string config_version = 6;
+    google.protobuf.Timestamp last_updated = 7;
+}

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/xbox/sing-box-manager/internal/controller/service"
-	pb "github.com/xbox/sing-box-manager/proto"
+	pb "github.com/xbox/sing-box-manager/proto/agent"
 )
 
 // AgentServiceServer gRPC AgentService服务实现

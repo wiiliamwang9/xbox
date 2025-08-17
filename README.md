@@ -34,6 +34,12 @@
 - **自动恢复**: 服务异常自动重启和恢复
 - **数据备份**: 自动数据备份和恢复
 
+### 🔒 企业级安全
+- **TLS + mTLS双向认证**: 所有gRPC通信采用证书双向认证
+- **端到端加密**: TLS 1.2/1.3 强加密保护数据传输
+- **身份验证**: X.509证书验证防止非法访问
+- **安全证书管理**: PKI证书基础设施和自动化工具
+
 ## 🏗 系统架构
 
 ```
@@ -48,9 +54,9 @@
                             ┌─────────────────────────────────────────────────────────┐
                             │                     应用层                             │
                             │                                                         │
-┌─────────────────┐  gRPC   │  ┌──────────────────┐   RESTful API  ┌─────────────────┐ │
+┌─────────────────┐ TLS+mTLS │  ┌──────────────────┐   RESTful API  ┌─────────────────┐ │
 │     Agent       │ ◄─────────► │   Controller     │ ◄──────────────│  External       │ │
-│   (sing-box)    │         │  │   (管理中心)      │                │  Services       │ │
+│   (sing-box)    │  gRPC+证书  │  │   (管理中心)      │                │  Services       │ │
 │                 │         │  │                  │                │                 │ │
 │ ┌─────────────┐ │         │  │ ┌──────────────┐ │                └─────────────────┘ │
 │ │ 监控指标    │ │         │  │ │ gRPC服务     │ │                                      │
@@ -77,6 +83,7 @@
 |------|----------|------|
 | Docker | 20.10+ | 容器运行时 |
 | Docker Compose | 2.0+ | 容器编排 |
+| OpenSSL | 1.1.1+ | TLS证书生成 |
 | 内存 | 4GB+ | 推荐配置 |
 | 磁盘 | 10GB+ | 数据存储空间 |
 
@@ -87,10 +94,12 @@
 git clone https://github.com/your-org/xbox.git
 cd xbox
 
-# 2. 赋予执行权限
-chmod +x scripts/deploy.sh
+# 2. 生成TLS证书（首次部署必需）
+chmod +x scripts/generate_tls_certs.sh
+./scripts/generate_tls_certs.sh
 
 # 3. 一键安装部署
+chmod +x scripts/deploy.sh
 ./scripts/deploy.sh install
 ```
 
@@ -105,6 +114,9 @@ chmod +x scripts/deploy.sh
 # 验证服务可用性
 curl http://localhost:8080/api/v1/health    # Controller健康检查
 curl http://localhost:8081/health           # Agent健康检查
+
+# 验证TLS证书配置
+./simple_tls_test.sh                        # TLS配置验证
 ```
 
 ### 访问系统
@@ -172,8 +184,13 @@ xbox/
 │   ├── config.yaml              #   Controller配置
 │   ├── agent.yaml               #   Agent配置
 │   └── sing-box.json            #   sing-box配置模板
+├── certs/                        # TLS证书目录
+│   ├── ca/ca-cert.pem           #   CA根证书
+│   ├── server/server-cert.pem   #   Controller服务器证书
+│   └── client/client-cert.pem   #   Agent客户端证书
 ├── scripts/                      # 部署和工具脚本
 │   ├── deploy.sh                #   一键部署脚本
+│   ├── generate_tls_certs.sh    #   TLS证书生成脚本
 │   └── init.sql                 #   数据库初始化
 ├── monitoring/                   # 监控配置
 │   └── prometheus.yml           #   Prometheus配置
@@ -386,13 +403,33 @@ docker-compose restart prometheus grafana
 - 配置日志轮转策略
 - 启用gRPC连接复用
 
-### 安全考虑
+### 🔒 安全架构
 
-- **网络隔离**: 使用Docker内部网络
-- **访问控制**: 配置防火墙规则  
-- **数据加密**: 启用TLS加密通信
+#### TLS + mTLS双向认证
+- **端到端加密**: 所有gRPC通信采用TLS 1.2/1.3加密
+- **双向身份验证**: Controller和Agent使用X.509证书相互认证
+- **证书管理**: PKI基础设施，支持证书生成、验证和轮换
+- **防中间人攻击**: 通过证书链验证和主机名检查
+
+#### 证书基础设施
+```bash
+# 生成证书基础设施
+./scripts/generate_tls_certs.sh
+
+# 验证TLS配置
+./simple_tls_test.sh
+
+# 测试mTLS认证
+./test_mtls_authentication.sh
+```
+
+#### 安全特性
+- **网络隔离**: Docker内部网络 + TLS加密
+- **身份验证**: 基于证书的强身份认证
+- **访问控制**: 只允许有效证书的连接
+- **数据保护**: 传输中数据全程加密
+- **审计能力**: 证书和连接事件日志
 - **权限管理**: 最小权限原则
-- **审计日志**: 记录所有操作日志
 
 ## 🤝 贡献指南
 

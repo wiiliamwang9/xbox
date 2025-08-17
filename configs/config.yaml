@@ -22,9 +22,11 @@ grpc:
   host: "0.0.0.0"
   port: 9090
   tls:
-    enabled: false
-    cert_file: ""
-    key_file: ""
+    enabled: true                              # 启用TLS + mTLS双向认证
+    cert_file: "/root/wl/code/certs/server-cert.pem"  # Controller服务器证书
+    key_file: "/root/wl/code/certs/server-key.pem"    # Controller服务器私钥
+    ca_file: "/root/wl/code/certs/ca-cert.pem"           # CA根证书（验证客户端）
+    server_name: "xbox-controller"              # 服务器名称
 
 # 日志配置
 log:

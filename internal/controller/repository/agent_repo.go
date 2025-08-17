@@ -29,6 +29,8 @@ type AgentRepository interface {
 	GetOfflineAgents(maxOfflineTime time.Duration) ([]*models.Agent, error)
 	// 根据状态获取Agent列表
 	GetByStatus(status string, limit, offset int) ([]*models.Agent, int64, error)
+	// 获取所有Agent（无分页）
+	GetAllAgents(ctx ...interface{}) ([]*models.Agent, error)
 }
 
 // agentRepository Agent数据访问实现
@@ -143,4 +145,11 @@ func (r *agentRepository) GetByStatus(status string, limit, offset int) ([]*mode
 	}
 	
 	return agents, total, nil
+}
+
+// GetAllAgents 获取所有Agent（无分页）
+func (r *agentRepository) GetAllAgents(ctx ...interface{}) ([]*models.Agent, error) {
+	var agents []*models.Agent
+	err := r.db.Order("created_at DESC").Find(&agents).Error
+	return agents, err
 }

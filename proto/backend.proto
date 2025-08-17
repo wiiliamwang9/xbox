@@ -1,0 +1,284 @@
+syntax = "proto3";
+package backend;
+option go_package = "github.com/xbox/sing-box-manager/proto/backend";
+
+import "google/protobuf/timestamp.proto";
+
+// 后端服务接口 - 用于SaaS Backend与Xbox Controller通信
+service BackendService {
+    // 健康检查
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+    
+    // 节点管理
+    rpc GetAgents(GetAgentsRequest) returns (GetAgentsResponse);
+    rpc GetAgent(GetAgentRequest) returns (GetAgentResponse);
+    rpc GetAgentStats(GetAgentStatsRequest) returns (GetAgentStatsResponse);
+    
+    // Agent部署管理
+    rpc DeployAgent(DeployAgentRequest) returns (DeployAgentResponse);
+    rpc UninstallAgent(UninstallAgentRequest) returns (UninstallAgentResponse);
+    
+    // 配置管理
+    rpc UpdateAgentConfig(UpdateAgentConfigRequest) returns (UpdateAgentConfigResponse);
+    
+    // 监控数据获取
+    rpc GetAgentMonitoring(GetAgentMonitoringRequest) returns (GetAgentMonitoringResponse);
+    
+    // IP段管理
+    rpc GetIPRanges(GetIPRangesRequest) returns (GetIPRangesResponse);
+    
+    // 节点测试
+    rpc TestAgent(TestAgentRequest) returns (TestAgentResponse);
+    
+    // 协议支持查询
+    rpc GetProtocolInfo(GetProtocolInfoRequest) returns (GetProtocolInfoResponse);
+}
+
+// 健康检查请求
+message HealthCheckRequest {
+}
+
+// 健康检查响应
+message HealthCheckResponse {
+    bool success = 1;
+    string status = 2;
+    string service = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+
+// 获取Agent列表请求
+message GetAgentsRequest {
+    int32 page = 1;
+    int32 page_size = 2;
+    string status_filter = 3;  // online, offline, unknown
+    string country_filter = 4;
+    string region_filter = 5;
+}
+
+// Agent信息
+message AgentInfo {
+    string agent_id = 1;
+    string hostname = 2;
+    string ip_address = 3;
+    string status = 4;           // online, offline, unknown
+    string country = 5;
+    string region = 6;
+    string city = 7;
+    int32 current_connections = 8;
+    double cpu_usage = 9;
+    double memory_usage = 10;
+    double disk_usage = 11;
+    int32 network_latency = 12;
+    google.protobuf.Timestamp last_heartbeat = 13;
+    google.protobuf.Timestamp registered_at = 14;
+    string version = 15;
+    map<string, string> metadata = 16;
+    IPRangeInfo ip_range_info = 17;
+}
+
+// 获取Agent列表响应
+message GetAgentsResponse {
+    bool success = 1;
+    string message = 2;
+    repeated AgentInfo agents = 3;
+    int32 total_count = 4;
+    int32 page = 5;
+    int32 page_size = 6;
+}
+
+// 获取单个Agent请求
+message GetAgentRequest {
+    string agent_id = 1;
+}
+
+// 获取单个Agent响应
+message GetAgentResponse {
+    bool success = 1;
+    string message = 2;
+    AgentInfo agent = 3;
+}
+
+// 获取Agent统计请求
+message GetAgentStatsRequest {
+}
+
+// Agent统计信息
+message AgentStats {
+    int32 total_agents = 1;
+    int32 online_agents = 2;
+    int32 offline_agents = 3;
+    int32 unknown_agents = 4;
+    double avg_cpu_usage = 5;
+    double avg_memory_usage = 6;
+    int32 total_connections = 7;
+    map<string, int32> agents_by_country = 8;
+    map<string, int32> agents_by_region = 9;
+}
+
+// 获取Agent统计响应
+message GetAgentStatsResponse {
+    bool success = 1;
+    string message = 2;
+    AgentStats stats = 3;
+}
+
+// 部署Agent请求
+message DeployAgentRequest {
+    string node_ip = 1;
+    int32 ssh_port = 2;
+    string ssh_user = 3;
+    string ssh_password = 4;
+    string controller_url = 5;
+    map<string, string> deployment_options = 6;
+}
+
+// 部署Agent响应
+message DeployAgentResponse {
+    bool success = 1;
+    string message = 2;
+    string agent_id = 3;
+    string deployment_log = 4;
+    int32 deployment_time_seconds = 5;
+}
+
+// 卸载Agent请求
+message UninstallAgentRequest {
+    string agent_id = 1;
+    bool force_uninstall = 2;
+    string reason = 3;
+    int32 timeout_seconds = 4;
+}
+
+// 卸载Agent响应
+message UninstallAgentResponse {
+    bool success = 1;
+    string message = 2;
+    string uninstall_status = 3;
+    repeated string cleaned_files = 4;
+    int64 cleanup_time_ms = 5;
+}
+
+// 更新Agent配置请求
+message UpdateAgentConfigRequest {
+    string agent_id = 1;
+    string config_type = 2;      // singbox, system, filters, multiplex
+    string config_content = 3;
+    bool force_update = 4;
+    string config_version = 5;
+}
+
+// 更新Agent配置响应
+message UpdateAgentConfigResponse {
+    bool success = 1;
+    string message = 2;
+    string applied_version = 3;
+    google.protobuf.Timestamp updated_at = 4;
+}
+
+// 获取Agent监控请求
+message GetAgentMonitoringRequest {
+    string agent_id = 1;
+    int32 duration_minutes = 2;  // 监控数据时间范围（分钟）
+}
+
+// 监控数据点
+message MonitoringDataPoint {
+    google.protobuf.Timestamp timestamp = 1;
+    double value = 2;
+}
+
+// Agent监控数据
+message AgentMonitoringData {
+    string agent_id = 1;
+    repeated MonitoringDataPoint cpu_usage = 2;
+    repeated MonitoringDataPoint memory_usage = 3;
+    repeated MonitoringDataPoint disk_usage = 4;
+    repeated MonitoringDataPoint network_connections = 5;
+    string singbox_status = 6;
+    google.protobuf.Timestamp last_update = 7;
+    int32 active_connections = 8;
+    double network_latency_ms = 9;
+}
+
+// 获取Agent监控响应
+message GetAgentMonitoringResponse {
+    bool success = 1;
+    string message = 2;
+    AgentMonitoringData monitoring_data = 3;
+}
+
+// 获取IP段请求
+message GetIPRangesRequest {
+    string country_filter = 1;
+    string region_filter = 2;
+    string isp_filter = 3;
+    bool include_agents = 4;     // 是否包含Agent详细信息
+}
+
+// IP段信息
+message IPRangeInfo {
+    string ip_range = 1;         // IP段，如 192.168.1.0/24
+    string country = 2;
+    string region = 3;
+    string city = 4;
+    string isp = 5;
+    int32 agent_count = 6;       // 该IP段下的Agent数量
+    repeated AgentInfo agents = 7; // Agent详细信息（可选）
+    string detection_method = 8;  // auto, manual, api
+    google.protobuf.Timestamp detected_at = 9;
+}
+
+// 获取IP段响应
+message GetIPRangesResponse {
+    bool success = 1;
+    string message = 2;
+    repeated IPRangeInfo ip_ranges = 3;
+    int32 total_ranges = 4;
+}
+
+// 测试Agent请求
+message TestAgentRequest {
+    string agent_id = 1;
+    string test_type = 2;        // connection, proxy, all
+    int32 timeout_seconds = 3;
+}
+
+// 测试结果
+message TestResult {
+    string test_type = 1;
+    bool success = 2;
+    string message = 3;
+    double latency_ms = 4;
+    google.protobuf.Timestamp tested_at = 5;
+    map<string, string> details = 6;
+}
+
+// 测试Agent响应
+message TestAgentResponse {
+    bool success = 1;
+    string message = 2;
+    repeated TestResult test_results = 3;
+    string overall_status = 4;   // healthy, degraded, failed
+}
+
+// 获取协议支持信息请求
+message GetProtocolInfoRequest {
+    string agent_id = 1;         // 可选，获取特定Agent的协议支持
+}
+
+// 协议支持信息
+message ProtocolSupportInfo {
+    string protocol_name = 1;    // HTTP, SOCKS5, Shadowsocks, VMess, Trojan, VLESS
+    bool supported = 2;
+    string version = 3;
+    map<string, string> capabilities = 4;
+    bool enabled = 5;
+}
+
+// 获取协议支持信息响应
+message GetProtocolInfoResponse {
+    bool success = 1;
+    string message = 2;
+    repeated ProtocolSupportInfo protocols = 3;
+    string system_version = 4;
+}

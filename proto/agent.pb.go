@@ -1900,6 +1900,152 @@ func (x *IPRangeInfo) GetDetectedAt() string {
 	return ""
 }
 
+// Agent卸载请求
+type UninstallRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	AgentId        string                 `protobuf:"bytes,1,opt,name=agent_id,json=agentId,proto3" json:"agent_id,omitempty"`                       // Agent ID
+	ForceUninstall bool                   `protobuf:"varint,2,opt,name=force_uninstall,json=forceUninstall,proto3" json:"force_uninstall,omitempty"` // 是否强制卸载
+	Reason         string                 `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`                                        // 卸载原因
+	TimeoutSeconds int32                  `protobuf:"varint,4,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"` // 超时时间（秒）
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *UninstallRequest) Reset() {
+	*x = UninstallRequest{}
+	mi := &file_proto_agent_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UninstallRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UninstallRequest) ProtoMessage() {}
+
+func (x *UninstallRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UninstallRequest.ProtoReflect.Descriptor instead.
+func (*UninstallRequest) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *UninstallRequest) GetAgentId() string {
+	if x != nil {
+		return x.AgentId
+	}
+	return ""
+}
+
+func (x *UninstallRequest) GetForceUninstall() bool {
+	if x != nil {
+		return x.ForceUninstall
+	}
+	return false
+}
+
+func (x *UninstallRequest) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
+}
+
+func (x *UninstallRequest) GetTimeoutSeconds() int32 {
+	if x != nil {
+		return x.TimeoutSeconds
+	}
+	return 0
+}
+
+// Agent卸载响应
+type UninstallResponse struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Success         bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                                       // 是否成功
+	Message         string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`                                        // 响应消息
+	UninstallStatus string                 `protobuf:"bytes,3,opt,name=uninstall_status,json=uninstallStatus,proto3" json:"uninstall_status,omitempty"` // 卸载状态: preparing, cleaning_singbox, reporting, completed, failed
+	CleanedFiles    []string               `protobuf:"bytes,4,rep,name=cleaned_files,json=cleanedFiles,proto3" json:"cleaned_files,omitempty"`          // 已清理的文件列表
+	CleanupTime     int64                  `protobuf:"varint,5,opt,name=cleanup_time,json=cleanupTime,proto3" json:"cleanup_time,omitempty"`            // 清理耗时（毫秒）
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *UninstallResponse) Reset() {
+	*x = UninstallResponse{}
+	mi := &file_proto_agent_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UninstallResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UninstallResponse) ProtoMessage() {}
+
+func (x *UninstallResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_agent_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UninstallResponse.ProtoReflect.Descriptor instead.
+func (*UninstallResponse) Descriptor() ([]byte, []int) {
+	return file_proto_agent_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *UninstallResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *UninstallResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *UninstallResponse) GetUninstallStatus() string {
+	if x != nil {
+		return x.UninstallStatus
+	}
+	return ""
+}
+
+func (x *UninstallResponse) GetCleanedFiles() []string {
+	if x != nil {
+		return x.CleanedFiles
+	}
+	return nil
+}
+
+func (x *UninstallResponse) GetCleanupTime() int64 {
+	if x != nil {
+		return x.CleanupTime
+	}
+	return 0
+}
+
 var File_proto_agent_proto protoreflect.FileDescriptor
 
 const file_proto_agent_proto_rawDesc = "" +
@@ -2061,7 +2207,18 @@ const file_proto_agent_proto_rawDesc = "" +
 	"\x03isp\x18\x05 \x01(\tR\x03isp\x12)\n" +
 	"\x10detection_method\x18\x06 \x01(\tR\x0fdetectionMethod\x12\x1f\n" +
 	"\vdetected_at\x18\a \x01(\tR\n" +
-	"detectedAt2\x89\x06\n" +
+	"detectedAt\"\x97\x01\n" +
+	"\x10UninstallRequest\x12\x19\n" +
+	"\bagent_id\x18\x01 \x01(\tR\aagentId\x12'\n" +
+	"\x0fforce_uninstall\x18\x02 \x01(\bR\x0eforceUninstall\x12\x16\n" +
+	"\x06reason\x18\x03 \x01(\tR\x06reason\x12'\n" +
+	"\x0ftimeout_seconds\x18\x04 \x01(\x05R\x0etimeoutSeconds\"\xba\x01\n" +
+	"\x11UninstallResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12)\n" +
+	"\x10uninstall_status\x18\x03 \x01(\tR\x0funinstallStatus\x12#\n" +
+	"\rcleaned_files\x18\x04 \x03(\tR\fcleanedFiles\x12!\n" +
+	"\fcleanup_time\x18\x05 \x01(\x03R\vcleanupTime2\xce\x06\n" +
 	"\fAgentService\x12@\n" +
 	"\rRegisterAgent\x12\x16.agent.RegisterRequest\x1a\x17.agent.RegisterResponse\x12>\n" +
 	"\tHeartbeat\x12\x17.agent.HeartbeatRequest\x1a\x18.agent.HeartbeatResponse\x12;\n" +
@@ -2073,7 +2230,8 @@ const file_proto_agent_proto_rawDesc = "" +
 	"\x0fGetFilterConfig\x12\x1a.agent.FilterConfigRequest\x1a\x1b.agent.FilterConfigResponse\x12A\n" +
 	"\x0eRollbackConfig\x12\x16.agent.RollbackRequest\x1a\x17.agent.RollbackResponse\x12V\n" +
 	"\x15UpdateMultiplexConfig\x12\x1d.agent.MultiplexConfigRequest\x1a\x1e.agent.MultiplexConfigResponse\x12S\n" +
-	"\x12GetMultiplexConfig\x12\x1d.agent.MultiplexStatusRequest\x1a\x1e.agent.MultiplexStatusResponseB.Z,github.com/xbox/sing-box-manager/proto/agentb\x06proto3"
+	"\x12GetMultiplexConfig\x12\x1d.agent.MultiplexStatusRequest\x1a\x1e.agent.MultiplexStatusResponse\x12C\n" +
+	"\x0eUninstallAgent\x12\x17.agent.UninstallRequest\x1a\x18.agent.UninstallResponseB.Z,github.com/xbox/sing-box-manager/proto/agentb\x06proto3"
 
 var (
 	file_proto_agent_proto_rawDescOnce sync.Once
@@ -2087,7 +2245,7 @@ func file_proto_agent_proto_rawDescGZIP() []byte {
 	return file_proto_agent_proto_rawDescData
 }
 
-var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
+var file_proto_agent_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
 var file_proto_agent_proto_goTypes = []any{
 	(*RegisterRequest)(nil),         // 0: agent.RegisterRequest
 	(*RegisterResponse)(nil),        // 1: agent.RegisterResponse
@@ -2116,24 +2274,26 @@ var file_proto_agent_proto_goTypes = []any{
 	(*MultiplexConfig)(nil),         // 24: agent.MultiplexConfig
 	(*ProtocolMultiplex)(nil),       // 25: agent.ProtocolMultiplex
 	(*IPRangeInfo)(nil),             // 26: agent.IPRangeInfo
-	nil,                             // 27: agent.RegisterRequest.MetadataEntry
-	nil,                             // 28: agent.HeartbeatRequest.MetricsEntry
-	nil,                             // 29: agent.StatusResponse.SystemInfoEntry
-	nil,                             // 30: agent.Rule.MetadataEntry
-	nil,                             // 31: agent.MultiplexConfig.BrutalEntry
+	(*UninstallRequest)(nil),        // 27: agent.UninstallRequest
+	(*UninstallResponse)(nil),       // 28: agent.UninstallResponse
+	nil,                             // 29: agent.RegisterRequest.MetadataEntry
+	nil,                             // 30: agent.HeartbeatRequest.MetricsEntry
+	nil,                             // 31: agent.StatusResponse.SystemInfoEntry
+	nil,                             // 32: agent.Rule.MetadataEntry
+	nil,                             // 33: agent.MultiplexConfig.BrutalEntry
 }
 var file_proto_agent_proto_depIdxs = []int32{
-	27, // 0: agent.RegisterRequest.metadata:type_name -> agent.RegisterRequest.MetadataEntry
+	29, // 0: agent.RegisterRequest.metadata:type_name -> agent.RegisterRequest.MetadataEntry
 	26, // 1: agent.RegisterRequest.ip_range_info:type_name -> agent.IPRangeInfo
-	28, // 2: agent.HeartbeatRequest.metrics:type_name -> agent.HeartbeatRequest.MetricsEntry
+	30, // 2: agent.HeartbeatRequest.metrics:type_name -> agent.HeartbeatRequest.MetricsEntry
 	26, // 3: agent.HeartbeatRequest.ip_range_info:type_name -> agent.IPRangeInfo
 	10, // 4: agent.RulesRequest.rules:type_name -> agent.Rule
-	29, // 5: agent.StatusResponse.system_info:type_name -> agent.StatusResponse.SystemInfoEntry
-	30, // 6: agent.Rule.metadata:type_name -> agent.Rule.MetadataEntry
+	31, // 5: agent.StatusResponse.system_info:type_name -> agent.StatusResponse.SystemInfoEntry
+	32, // 6: agent.Rule.metadata:type_name -> agent.Rule.MetadataEntry
 	17, // 7: agent.FilterConfigResponse.filters:type_name -> agent.ProtocolFilter
 	24, // 8: agent.MultiplexConfigRequest.multiplex_config:type_name -> agent.MultiplexConfig
 	25, // 9: agent.MultiplexStatusResponse.multiplex_configs:type_name -> agent.ProtocolMultiplex
-	31, // 10: agent.MultiplexConfig.brutal:type_name -> agent.MultiplexConfig.BrutalEntry
+	33, // 10: agent.MultiplexConfig.brutal:type_name -> agent.MultiplexConfig.BrutalEntry
 	24, // 11: agent.ProtocolMultiplex.multiplex_config:type_name -> agent.MultiplexConfig
 	0,  // 12: agent.AgentService.RegisterAgent:input_type -> agent.RegisterRequest
 	2,  // 13: agent.AgentService.Heartbeat:input_type -> agent.HeartbeatRequest
@@ -2146,19 +2306,21 @@ var file_proto_agent_proto_depIdxs = []int32{
 	18, // 20: agent.AgentService.RollbackConfig:input_type -> agent.RollbackRequest
 	20, // 21: agent.AgentService.UpdateMultiplexConfig:input_type -> agent.MultiplexConfigRequest
 	22, // 22: agent.AgentService.GetMultiplexConfig:input_type -> agent.MultiplexStatusRequest
-	1,  // 23: agent.AgentService.RegisterAgent:output_type -> agent.RegisterResponse
-	3,  // 24: agent.AgentService.Heartbeat:output_type -> agent.HeartbeatResponse
-	5,  // 25: agent.AgentService.UpdateConfig:output_type -> agent.ConfigResponse
-	7,  // 26: agent.AgentService.UpdateRules:output_type -> agent.RulesResponse
-	9,  // 27: agent.AgentService.GetStatus:output_type -> agent.StatusResponse
-	12, // 28: agent.AgentService.UpdateBlacklist:output_type -> agent.BlacklistResponse
-	14, // 29: agent.AgentService.UpdateWhitelist:output_type -> agent.WhitelistResponse
-	16, // 30: agent.AgentService.GetFilterConfig:output_type -> agent.FilterConfigResponse
-	19, // 31: agent.AgentService.RollbackConfig:output_type -> agent.RollbackResponse
-	21, // 32: agent.AgentService.UpdateMultiplexConfig:output_type -> agent.MultiplexConfigResponse
-	23, // 33: agent.AgentService.GetMultiplexConfig:output_type -> agent.MultiplexStatusResponse
-	23, // [23:34] is the sub-list for method output_type
-	12, // [12:23] is the sub-list for method input_type
+	27, // 23: agent.AgentService.UninstallAgent:input_type -> agent.UninstallRequest
+	1,  // 24: agent.AgentService.RegisterAgent:output_type -> agent.RegisterResponse
+	3,  // 25: agent.AgentService.Heartbeat:output_type -> agent.HeartbeatResponse
+	5,  // 26: agent.AgentService.UpdateConfig:output_type -> agent.ConfigResponse
+	7,  // 27: agent.AgentService.UpdateRules:output_type -> agent.RulesResponse
+	9,  // 28: agent.AgentService.GetStatus:output_type -> agent.StatusResponse
+	12, // 29: agent.AgentService.UpdateBlacklist:output_type -> agent.BlacklistResponse
+	14, // 30: agent.AgentService.UpdateWhitelist:output_type -> agent.WhitelistResponse
+	16, // 31: agent.AgentService.GetFilterConfig:output_type -> agent.FilterConfigResponse
+	19, // 32: agent.AgentService.RollbackConfig:output_type -> agent.RollbackResponse
+	21, // 33: agent.AgentService.UpdateMultiplexConfig:output_type -> agent.MultiplexConfigResponse
+	23, // 34: agent.AgentService.GetMultiplexConfig:output_type -> agent.MultiplexStatusResponse
+	28, // 35: agent.AgentService.UninstallAgent:output_type -> agent.UninstallResponse
+	24, // [24:36] is the sub-list for method output_type
+	12, // [12:24] is the sub-list for method input_type
 	12, // [12:12] is the sub-list for extension type_name
 	12, // [12:12] is the sub-list for extension extendee
 	0,  // [0:12] is the sub-list for field type_name
@@ -2175,7 +2337,7 @@ func file_proto_agent_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_agent_proto_rawDesc), len(file_proto_agent_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   32,
+			NumMessages:   34,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

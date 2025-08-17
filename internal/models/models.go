@@ -19,12 +19,17 @@ type Agent struct {
 	City          string         `gorm:"size:128" json:"city"`                 // 城市
 	ISP           string         `gorm:"size:128;index" json:"isp"`            // 运营商
 	Version       string         `gorm:"size:32" json:"version"`
-	Status        string         `gorm:"type:enum('online','offline','error');default:'offline';index" json:"status"`
-	LastHeartbeat *time.Time     `gorm:"index" json:"last_heartbeat"`
-	Metadata      JSON           `gorm:"type:json" json:"metadata"`
-	CreatedAt     time.Time      `json:"created_at"`
-	UpdatedAt     time.Time      `json:"updated_at"`
-	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-"`
+	Status             string         `gorm:"type:enum('online','offline','error');default:'offline';index" json:"status"`
+	LastHeartbeat      *time.Time     `gorm:"index" json:"last_heartbeat"`
+	CurrentConnections int            `gorm:"default:0" json:"current_connections"`
+	CPUUsage           float64        `gorm:"type:decimal(5,2);default:0" json:"cpu_usage"`
+	MemoryUsage        float64        `gorm:"type:decimal(5,2);default:0" json:"memory_usage"`
+	DiskUsage          float64        `gorm:"type:decimal(5,2);default:0" json:"disk_usage"`
+	NetworkLatency     int            `gorm:"default:0" json:"network_latency"`
+	Metadata           JSON           `gorm:"type:json" json:"metadata"`
+	CreatedAt          time.Time      `json:"created_at"`
+	UpdatedAt          time.Time      `json:"updated_at"`
+	DeletedAt          gorm.DeletedAt `gorm:"index" json:"-"`
 
 	// 关联关系
 	Configs          []Config          `gorm:"foreignKey:AgentID;constraint:OnDelete:CASCADE" json:"configs,omitempty"`
