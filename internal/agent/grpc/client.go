@@ -94,7 +94,7 @@ func (c *Client) Connect() error {
 		}
 		
 		opts = append(opts, grpc.WithTransportCredentials(creds))
-		log.Printf("TLS + mTLS客户端配置成功，CA证书: %s", c.config.GRPC.TLS.CAFile)
+		log.Printf("TLS + mTLS客户端配置成功，CA证书: %s", c.config.GetTLSCAFile())
 	} else {
 		log.Println("使用非安全连接...")
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -805,14 +805,19 @@ func (c *Client) reportUninstallResult(result *pb.UninstallResponse) error {
 
 // loadTLSCredentials 加载TLS + mTLS凭据
 func (c *Client) loadTLSCredentials() (credentials.TransportCredentials, error) {
+	// 获取证书文件的完整路径
+	certFile := c.config.GetTLSCertFile()
+	keyFile := c.config.GetTLSKeyFile()
+	caFile := c.config.GetTLSCAFile()
+	
 	// 读取客户端证书和私钥
-	clientCert, err := tls.LoadX509KeyPair(c.config.GRPC.TLS.CertFile, c.config.GRPC.TLS.KeyFile)
+	clientCert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
 		return nil, fmt.Errorf("加载客户端证书失败: %v", err)
 	}
 
 	// 读取CA证书
-	caCert, err := ioutil.ReadFile(c.config.GRPC.TLS.CAFile)
+	caCert, err := ioutil.ReadFile(caFile)
 	if err != nil {
 		return nil, fmt.Errorf("读取CA证书失败: %v", err)
 	}
@@ -839,9 +844,9 @@ func (c *Client) loadTLSCredentials() (credentials.TransportCredentials, error) 
 	}
 
 	log.Printf("客户端TLS配置详情:")
-	log.Printf("  客户端证书: %s", c.config.GRPC.TLS.CertFile)
-	log.Printf("  客户端私钥: %s", c.config.GRPC.TLS.KeyFile)
-	log.Printf("  CA证书: %s", c.config.GRPC.TLS.CAFile)
+	log.Printf("  客户端证书: %s", certFile)
+	log.Printf("  客户端私钥: %s", keyFile)
+	log.Printf("  CA证书: %s", caFile)
 	log.Printf("  服务器名称: %s", c.config.GRPC.TLS.ServerName)
 	log.Printf("  TLS版本: 1.2-1.3")
 

@@ -211,3 +211,42 @@ func (c *Config) GetLogFile() string {
 	
 	return filepath.Join(".", c.Log.File)
 }
+
+// GetTLSCertFile 获取TLS证书文件路径
+func (c *Config) GetTLSCertFile() string {
+	if c.GRPC.TLS.CertFile == "" {
+		return ""
+	}
+	
+	if filepath.IsAbs(c.GRPC.TLS.CertFile) {
+		return c.GRPC.TLS.CertFile
+	}
+	
+	return filepath.Join(".", c.GRPC.TLS.CertFile)
+}
+
+// GetTLSKeyFile 获取TLS私钥文件路径
+func (c *Config) GetTLSKeyFile() string {
+	if c.GRPC.TLS.KeyFile == "" {
+		return ""
+	}
+	
+	if filepath.IsAbs(c.GRPC.TLS.KeyFile) {
+		return c.GRPC.TLS.KeyFile
+	}
+	
+	return filepath.Join(".", c.GRPC.TLS.KeyFile)
+}
+
+// GetTLSCAFile 获取TLS CA证书文件路径
+func (c *Config) GetTLSCAFile() string {
+	if c.GRPC.TLS.CAFile == "" {
+		return ""
+	}
+	
+	if filepath.IsAbs(c.GRPC.TLS.CAFile) {
+		return c.GRPC.TLS.CAFile
+	}
+	
+	return filepath.Join(".", c.GRPC.TLS.CAFile)
+}

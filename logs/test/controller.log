@@ -1,0 +1,31 @@
+2025/08/22 02:06:34 Xbox Controller 0.1.0 启动中...
+2025/08/22 02:06:34 数据库连接成功
+2025/08/22 02:06:34 节点上报服务已启动，间隔: 60秒
+2025/08/22 02:06:34 Controller服务已启动
+2025/08/22 02:06:34 gRPC地址: 0.0.0.0:9090
+2025/08/22 02:06:34 HTTP地址: 0.0.0.0:9000
+2025/08/22 02:06:34 过滤器管理路由已注册 (Gin版本)
+2025/08/22 02:06:34 HTTP API服务器启动成功，监听地址: 0.0.0.0:9000
+{"file":"/app/wl/code/xbox/internal/controller/service/report_service.go:90","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).StartReporting","level":"info","message":"开始启动节点信息定时上报服务，上报间隔: %s1m0s","timestamp":"2025-08-22T02:06:34-04:00"}
+{"file":"/app/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-22T02:06:34-04:00"}
+2025/08/22 02:06:34 启用TLS + mTLS双向认证...
+2025/08/22 02:06:34 TLS配置详情:
+2025/08/22 02:06:34   服务器证书: certs/server/server-cert.pem
+2025/08/22 02:06:34   服务器私钥: certs/server/server-key.pem
+2025/08/22 02:06:34   CA证书: certs/ca/ca-cert.pem
+2025/08/22 02:06:34   客户端认证: 必须验证
+2025/08/22 02:06:34   TLS版本: 1.2-1.3
+2025/08/22 02:06:34 TLS + mTLS配置成功，证书文件: certs/server/server-cert.pem
+2025/08/22 02:06:34 gRPC服务器启动成功，监听地址: 0.0.0.0:9090
+{"file":"/app/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v服务器返回错误状态: 404","timestamp":"2025-08-22T02:06:34-04:00"}
+{"file":"/app/wl/code/xbox/internal/controller/service/report_service.go:113","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).StartReporting","level":"info","message":"节点信息定时上报服务启动成功","timestamp":"2025-08-22T02:06:34-04:00"}
+2025/08/22 02:06:37 Agent注册请求: ID=debian-1755842797, Hostname=debian, IP=195.78.55.64
+
+2025/08/22 02:06:37 [31;1m/app/wl/code/xbox/internal/controller/repository/agent_repo.go:54 [35;1mrecord not found
+[0m[33m[1.433ms] [34;1m[rows:0][0m SELECT * FROM `agents` WHERE id = 'debian-1755842797' AND `agents`.`deleted_at` IS NULL ORDER BY `agents`.`id` LIMIT 1
+2025/08/22 02:06:37 Agent注册响应: Success=true, Message=Agent注册成功
+2025/08/22 02:07:07 收到心跳: AgentID=debian-1755842797, Status=online
+{"file":"/app/wl/code/xbox/internal/controller/service/report_service.go:131","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"info","message":"开始执行节点信息上报","timestamp":"2025-08-22T02:07:34-04:00"}
+{"file":"/app/wl/code/xbox/internal/controller/service/report_service.go:155","function":"github.com/xbox/sing-box-manager/internal/controller/service.(*NodeReportService).reportNodeInfo","level":"error","message":"发送节点信息上报失败: %v服务器返回错误状态: 404","timestamp":"2025-08-22T02:07:34-04:00"}
+2025/08/22 02:07:37 收到心跳: AgentID=debian-1755842797, Status=online
+2025/08/22 02:08:07 收到心跳: AgentID=debian-1755842797, Status=online

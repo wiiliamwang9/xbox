@@ -62,7 +62,7 @@ func (s *Server) Start() error {
 		}
 		
 		opts = append(opts, grpc.Creds(creds))
-		log.Printf("TLS + mTLS配置成功，证书文件: %s", s.config.GRPC.TLS.CertFile)
+		log.Printf("TLS + mTLS配置成功，证书文件: %s", s.config.GetTLSCertFile())
 	}
 
 	// 创建gRPC服务器
@@ -101,14 +101,19 @@ func (s *Server) GetServer() *grpc.Server {
 
 // loadTLSCredentials 加载TLS + mTLS凭据
 func (s *Server) loadTLSCredentials() (credentials.TransportCredentials, error) {
+	// 获取证书文件的完整路径
+	certFile := s.config.GetTLSCertFile()
+	keyFile := s.config.GetTLSKeyFile()
+	caFile := s.config.GetTLSCAFile()
+	
 	// 读取服务器证书和私钥
-	serverCert, err := tls.LoadX509KeyPair(s.config.GRPC.TLS.CertFile, s.config.GRPC.TLS.KeyFile)
+	serverCert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
 		return nil, fmt.Errorf("加载服务器证书失败: %v", err)
 	}
 
 	// 读取CA证书
-	caCert, err := ioutil.ReadFile(s.config.GRPC.TLS.CAFile)
+	caCert, err := ioutil.ReadFile(caFile)
 	if err != nil {
 		return nil, fmt.Errorf("读取CA证书失败: %v", err)
 	}
@@ -136,9 +141,9 @@ func (s *Server) loadTLSCredentials() (credentials.TransportCredentials, error) 
 	}
 
 	log.Printf("TLS配置详情:")
-	log.Printf("  服务器证书: %s", s.config.GRPC.TLS.CertFile)
-	log.Printf("  服务器私钥: %s", s.config.GRPC.TLS.KeyFile)
-	log.Printf("  CA证书: %s", s.config.GRPC.TLS.CAFile)
+	log.Printf("  服务器证书: %s", certFile)
+	log.Printf("  服务器私钥: %s", keyFile)
+	log.Printf("  CA证书: %s", caFile)
 	log.Printf("  客户端认证: 必须验证")
 	log.Printf("  TLS版本: 1.2-1.3")
 
