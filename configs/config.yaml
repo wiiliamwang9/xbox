@@ -9,7 +9,7 @@ server:
 # 数据库配置
 database:
   driver: "mysql"
-  host: "localhost"
+  host: "165.254.16.243"
   port: 3306
   username: "root"
   password: "xbox123456"
